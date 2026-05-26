@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Rhétorique">
-  <meta name="description" content="Forger sa Parole — Rhétorique, vocabulaire, argumentation en 10 sessions">
+  <meta name="description" content="Forger sa Parole — Rhétorique, vocabulaire, argumentation en 18 sessions">
 
   <title>Forger sa Parole</title>
 
@@ -62,6 +62,16 @@
       </div>
     </div>
 
+    <!-- Révision rapide -->
+    <div class="quick-review-banner" onclick="startQuickReview()">
+      <div class="qr-banner-icon">⚡</div>
+      <div class="qr-banner-text">
+        <div class="qr-banner-title">Révision rapide</div>
+        <div class="qr-banner-desc">5 mots à mémoriser · 2 min</div>
+      </div>
+      <div class="qr-banner-arrow">›</div>
+    </div>
+
     <!-- Progress card -->
     <div class="section-title">Progression</div>
     <div class="card">
@@ -88,7 +98,7 @@
       <div class="quick-action" onclick="navigate('vocab')">
         <div class="quick-action-icon">🃏</div>
         <div class="quick-action-label">Flashcards</div>
-        <div class="quick-action-desc">35 mots clés à maîtriser</div>
+        <div class="quick-action-desc">50 mots clés à maîtriser</div>
       </div>
       <div class="quick-action" onclick="navigate('figures')">
         <div class="quick-action-icon">🎭</div>
@@ -102,7 +112,7 @@
       </div>
       <div class="quick-action" onclick="navigate('sessions')">
         <div class="quick-action-icon">📚</div>
-        <div class="quick-action-label">10 Sessions</div>
+        <div class="quick-action-label">18 Sessions</div>
         <div class="quick-action-desc">Programme complet</div>
       </div>
     </div>
@@ -114,7 +124,7 @@
   <div id="sessions-screen" class="screen">
     <div class="page-header">
       <div class="page-title">Sessions</div>
-      <div class="page-subtitle">10 sessions · ~3h de contenu</div>
+      <div class="page-subtitle">18 sessions · ~6h de contenu</div>
     </div>
     <div id="sessions-list"></div>
   </div><!-- /sessions-screen -->
@@ -124,7 +134,7 @@
   <div id="vocab-screen" class="screen">
     <div class="page-header">
       <div class="page-title">Vocabulaire</div>
-      <div class="page-subtitle">35 mots rhétoriques essentiels</div>
+      <div class="page-subtitle">50 mots rhétoriques essentiels</div>
     </div>
 
     <!-- Flashcard -->
@@ -146,11 +156,11 @@
     <!-- FC controls -->
     <div class="fc-controls">
       <button id="fc-prev" class="fc-nav-btn">‹</button>
-      <div class="fc-counter" id="fc-counter">1 / 35</div>
+      <div class="fc-counter" id="fc-counter">1 / 50</div>
       <button id="fc-next" class="fc-nav-btn">›</button>
     </div>
     <!-- Counter -->
-    <div class="vocab-counter" id="vocab-counter">35 mots · 0 mémorisé</div>
+    <div class="vocab-counter" id="vocab-counter">50 mots · 0 mémorisé</div>
 
     <!-- Search -->
     <input type="search" id="vocab-search" class="vocab-search" placeholder="🔍  Rechercher un mot…">
@@ -182,7 +192,9 @@
       <div class="page-subtitle">Test de niveau initial — 100 points</div>
     </div>
     <div id="quiz-questions"></div>
-    <div style="height:16px;"></div>
+    <div class="reset-zone">
+      <button class="reset-btn" onclick="resetAllProgress()">Réinitialiser la progression</button>
+    </div>
   </div><!-- /quiz-screen -->
 
 
