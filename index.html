@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#5856D6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Rhétorique">
+  <meta name="description" content="Forger sa Parole — Rhétorique, vocabulaire, argumentation en 10 sessions">
+
+  <title>Forger sa Parole</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══ HOME SCREEN ══════════════════════════════════════ -->
+  <div id="home-screen" class="screen">
+
+    <div class="home-hero">
+      <div class="home-hero-greeting">Bonjour Nicolas 👋</div>
+      <div class="home-hero-title">Forger sa Parole</div>
+      <div class="stats-row">
+        <div class="stat-chip">
+          <div class="stat-value" id="stat-sessions">0</div>
+          <div class="stat-label">Sessions</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-value" id="stat-streak">0</div>
+          <div class="stat-label">Streak</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-value" id="stat-score">—</div>
+          <div class="stat-label">Score</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-value" id="stat-words">0</div>
+          <div class="stat-label">Mots</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Streak -->
+    <div class="streak-card" onclick="navigate('home')">
+      <div class="streak-flame">🔥</div>
+      <div class="streak-info">
+        <div class="streak-count" id="streak-count">0</div>
+        <div class="streak-label">jours consécutifs</div>
+        <div class="streak-best" id="streak-best">Meilleur : 0 jour</div>
+      </div>
+    </div>
+
+    <!-- Progress card -->
+    <div class="section-title">Progression</div>
+    <div class="card">
+      <div class="progress-section">
+        <div class="progress-ring-wrap">
+          <svg class="progress-ring-svg" width="80" height="80" viewBox="0 0 80 80">
+            <circle class="progress-ring-bg" cx="40" cy="40" r="36"/>
+            <circle class="progress-ring-fill" id="home-ring-fill" cx="40" cy="40" r="36"
+              stroke-dasharray="226.2" stroke-dashoffset="226.2"/>
+          </svg>
+          <div class="progress-ring-text" id="home-progress-pct">0%</div>
+        </div>
+        <div class="progress-info">
+          <div class="progress-label" id="home-next-label">Session 1 : Les 3 piliers</div>
+          <div class="progress-desc" id="home-next-desc">Cours magistral · ~20 min</div>
+          <div class="progress-action" id="home-next-btn" onclick="">▶ Commencer</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="section-title">Accès rapide</div>
+    <div class="quick-actions">
+      <div class="quick-action" onclick="navigate('vocab')">
+        <div class="quick-action-icon">🃏</div>
+        <div class="quick-action-label">Flashcards</div>
+        <div class="quick-action-desc">35 mots clés à maîtriser</div>
+      </div>
+      <div class="quick-action" onclick="navigate('figures')">
+        <div class="quick-action-icon">🎭</div>
+        <div class="quick-action-label">Figures de style</div>
+        <div class="quick-action-desc">15 figures illustrées</div>
+      </div>
+      <div class="quick-action" onclick="navigate('quiz')">
+        <div class="quick-action-icon">📊</div>
+        <div class="quick-action-label">Diagnostic</div>
+        <div class="quick-action-desc">Test de niveau initial</div>
+      </div>
+      <div class="quick-action" onclick="navigate('sessions')">
+        <div class="quick-action-icon">📚</div>
+        <div class="quick-action-label">10 Sessions</div>
+        <div class="quick-action-desc">Programme complet</div>
+      </div>
+    </div>
+
+  </div><!-- /home-screen -->
+
+
+  <!-- ══ SESSIONS SCREEN ══════════════════════════════════ -->
+  <div id="sessions-screen" class="screen">
+    <div class="page-header">
+      <div class="page-title">Sessions</div>
+      <div class="page-subtitle">10 sessions · ~3h de contenu</div>
+    </div>
+    <div id="sessions-list"></div>
+  </div><!-- /sessions-screen -->
+
+
+  <!-- ══ VOCABULARY SCREEN ════════════════════════════════ -->
+  <div id="vocab-screen" class="screen">
+    <div class="page-header">
+      <div class="page-title">Vocabulaire</div>
+      <div class="page-subtitle">35 mots rhétoriques essentiels</div>
+    </div>
+
+    <!-- Flashcard -->
+    <div id="flashcard-container" class="flashcard-container" style="margin-bottom:8px;">
+      <div id="flashcard" class="flashcard">
+        <div class="flashcard-face flashcard-front">
+          <div class="flashcard-category" id="fc-category">Piliers</div>
+          <div class="flashcard-word" id="fc-word">Éthos</div>
+          <div class="flashcard-session-ref" id="fc-session"></div>
+          <div class="flashcard-hint">Touche pour révéler • Swipe pour naviguer</div>
+        </div>
+        <div class="flashcard-face flashcard-back">
+          <div class="flashcard-category" id="fc-back-category">Piliers</div>
+          <div class="flashcard-def" id="fc-def">Crédibilité de l'orateur.</div>
+          <div class="flashcard-example" id="fc-example">Exemple…</div>
+        </div>
+      </div>
+    </div>
+    <!-- FC controls -->
+    <div class="fc-controls">
+      <button id="fc-prev" class="fc-nav-btn">‹</button>
+      <div class="fc-counter" id="fc-counter">1 / 35</div>
+      <button id="fc-next" class="fc-nav-btn">›</button>
+    </div>
+    <!-- Counter -->
+    <div class="vocab-counter" id="vocab-counter">35 mots · 0 mémorisé</div>
+
+    <!-- Search -->
+    <input type="search" id="vocab-search" class="vocab-search" placeholder="🔍  Rechercher un mot…">
+
+    <!-- Filters -->
+    <div id="vocab-filters" class="category-filters"></div>
+
+    <!-- List -->
+    <div class="card-list" id="vocab-list"></div>
+
+  </div><!-- /vocab-screen -->
+
+
+  <!-- ══ FIGURES SCREEN ═══════════════════════════════════ -->
+  <div id="figures-screen" class="screen">
+    <div class="page-header">
+      <div class="page-title">Figures de style</div>
+      <div class="page-subtitle">15 figures illustrées et commentées</div>
+    </div>
+    <div class="figures-grid" id="figures-grid"></div>
+    <div style="height:16px;"></div>
+  </div><!-- /figures-screen -->
+
+
+  <!-- ══ QUIZ / BASELINE SCREEN ═══════════════════════════ -->
+  <div id="quiz-screen" class="screen">
+    <div class="page-header">
+      <div class="page-title">Diagnostic</div>
+      <div class="page-subtitle">Test de niveau initial — 100 points</div>
+    </div>
+    <div id="quiz-questions"></div>
+    <div style="height:16px;"></div>
+  </div><!-- /quiz-screen -->
+
+
+  <!-- ══ BOTTOM NAV ═══════════════════════════════════════ -->
+  <nav id="bottom-nav">
+    <div class="nav-item active" data-screen="home">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Accueil</div>
+    </div>
+    <div class="nav-item" data-screen="sessions">
+      <div class="nav-icon">📚</div>
+      <div class="nav-label">Sessions</div>
+    </div>
+    <div class="nav-item" data-screen="vocab">
+      <div class="nav-icon">🃏</div>
+      <div class="nav-label">Vocab</div>
+    </div>
+    <div class="nav-item" data-screen="figures">
+      <div class="nav-icon">🎭</div>
+      <div class="nav-label">Figures</div>
+    </div>
+    <div class="nav-item" data-screen="quiz">
+      <div class="nav-icon">📊</div>
+      <div class="nav-label">Diagnostic</div>
+    </div>
+  </nav>
+
+</div><!-- /app -->
+
+
+<!-- ══ SESSION DETAIL (overlay fullscreen) ══════════════ -->
+<div id="session-detail">
+
+  <!-- Reading progress bar -->
+  <div id="reading-bar-wrap">
+    <div id="reading-bar"></div>
+  </div>
+
+  <div class="detail-header">
+    <div class="back-btn" id="back-btn">
+      <span style="font-size:20px;">‹</span> Retour
+    </div>
+    <div class="detail-header-info">
+      <div class="detail-header-title" id="detail-session-title">Session</div>
+      <div class="detail-header-sub" id="detail-session-sub">Format · Durée</div>
+      <div class="detail-objectif" id="detail-objectif"></div>
+    </div>
+  </div>
+
+  <div class="detail-tabs">
+    <div class="detail-tab active" data-tab="cours">Cours</div>
+    <div class="detail-tab" data-tab="exercices">Exercices</div>
+    <div class="detail-tab" data-tab="ressources">Ressources</div>
+  </div>
+
+  <div class="detail-body">
+    <div class="detail-tab-content active" id="tab-cours"></div>
+    <div class="detail-tab-content" id="tab-exercices"></div>
+    <div class="detail-tab-content" id="tab-ressources"></div>
+  </div>
+</div>
+
+
+<!-- ══ VOCABULARY MODAL ══════════════════════════════════ -->
+<div id="vocab-modal" class="vocab-modal">
+  <div class="vocab-modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-word" id="modal-word">Mot</div>
+    <div class="modal-category" id="modal-category">Catégorie</div>
+    <div class="modal-session-ref" id="modal-session-ref"></div>
+    <div class="modal-def" id="modal-def">Définition</div>
+    <div class="modal-example" id="modal-example">Exemple</div>
+    <button class="modal-learn-btn" id="modal-learn-btn">Marquer comme mémorisé</button>
+  </div>
+</div>
+
+
+<!-- ══ FIGURE MODAL ══════════════════════════════════════ -->
+<div id="figure-modal" class="figure-modal">
+  <div class="figure-modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="figure-modal-header">
+      <div class="figure-modal-icon" id="fig-modal-icon">🔁</div>
+      <div>
+        <div class="figure-modal-name" id="fig-modal-name">Figure</div>
+        <div class="figure-modal-cat" id="fig-modal-cat">Catégorie</div>
+      </div>
+    </div>
+
+    <div class="figure-section">
+      <div class="figure-section-label">Étymologie</div>
+      <div class="figure-section-text" id="fig-modal-etym"></div>
+    </div>
+    <div class="figure-section">
+      <div class="figure-section-label">Définition</div>
+      <div class="figure-section-text" id="fig-modal-def"></div>
+    </div>
+    <div class="figure-section">
+      <div class="figure-section-label">Effet rhétorique</div>
+      <div class="figure-section-text" id="fig-modal-effet"></div>
+    </div>
+    <div class="figure-section">
+      <div class="figure-section-label">Exemples</div>
+      <div id="fig-modal-exemples"></div>
+    </div>
+    <div class="figure-section">
+      <div class="figure-section-label">Usage</div>
+      <div class="figure-section-text" id="fig-modal-usage"></div>
+    </div>
+    <div class="figure-section">
+      <div class="figure-section-label">Pièges à éviter</div>
+      <div class="figure-section-text" id="fig-modal-pieges"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ CELEBRATION ══════════════════════════════════════ -->
+<div id="celebration" class="celebration">
+  <div class="celebration-emoji" id="cel-emoji">🎉</div>
+  <div class="celebration-title" id="cel-title">Bravo !</div>
+  <div class="celebration-desc" id="cel-desc"></div>
+  <button class="celebration-btn" onclick="closeCelebration()">Continuer</button>
+</div>
+
+
+<!-- ══ TOAST ════════════════════════════════════════════ -->
+<div id="toast"></div>
+
+
+<!-- ══ SCRIPTS ══════════════════════════════════════════ -->
+<script src="content.js"></script>
+<script src="app.js"></script>
+<script>
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => {
+        console.warn('SW registration failed:', err);
+      });
+    });
+  }
+</script>
+
+</body>
+</html>

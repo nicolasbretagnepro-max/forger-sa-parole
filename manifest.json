@@ -1,0 +1,50 @@
+{
+  "name": "Forger sa Parole",
+  "short_name": "Rhétorique",
+  "description": "Rhétorique, vocabulaire, argumentation — programme complet en 10 sessions",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#5856D6",
+  "theme_color": "#5856D6",
+  "orientation": "portrait",
+  "lang": "fr",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Sessions",
+      "url": "./index.html#sessions",
+      "description": "Accéder aux 10 sessions du cours"
+    },
+    {
+      "name": "Vocabulaire",
+      "url": "./index.html#vocab",
+      "description": "Flashcards de vocabulaire rhétorique"
+    }
+  ]
+}
