@@ -2,7 +2,7 @@
 // FORGER SA PAROLE — Service Worker (offline support)
 // ============================================================
 
-const CACHE_NAME = 'fsp-v4';
+const CACHE_NAME = 'fsp-v5';
 const ASSETS = [
   './',
   './index.html',

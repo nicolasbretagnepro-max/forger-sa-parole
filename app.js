@@ -2,6 +2,18 @@
 // FORGER SA PAROLE — Application v2
 // ============================================================
 
+// ── MCQ state (persists across tab switches) ─────────────────
+const SESSION_EXERCISE_STATE = {}; // { [sessionId]: { mcq: {[qi]: selectedOption}, recallTexts: {[qi]: text} } }
+
+// ── Pillar definitions ────────────────────────────────────────
+const PILLARS = [
+  { id: 1, label: 'Fondements',             sessions: [1,2,3,4],     color: '#5856D6' },
+  { id: 2, label: 'Architecture du discours', sessions: [5,6,7,8],   color: '#007AFF' },
+  { id: 3, label: 'Maîtrise orale & cognitive', sessions: [9,10,11,12], color: '#34C759' },
+  { id: 4, label: 'Rhétorique appliquée',   sessions: [13,14,15,16], color: '#FF9500' },
+  { id: 5, label: 'Excellence académique',  sessions: [17,18],        color: '#AF52DE' },
+];
+
 // ── State ────────────────────────────────────────────────────
 const STATE = {
   currentScreen: 'home',
@@ -68,9 +80,9 @@ function markWordLearned(word) {
     const statWords = document.getElementById('stat-words');
     if (statWords) statWords.textContent = w.length;
     // Jalon de mémorisation : toast de félicitation aux seuils clés
-    const milestones = [10, 20, 35];
+    const milestones = [10, 25, 50];
     if (milestones.includes(w.length)) {
-      const labels = { 10: '10 mots mémorisés 🎓', 20: '20 mots mémorisés 🔥', 35: 'Vocabulaire maîtrisé ! 🏆' };
+      const labels = { 10: '10 mots mémorisés 🎓', 25: '25 mots — mi-chemin ! 🔥', 50: 'Les 50 mots maîtrisés ! 🏆' };
       showToast(labels[w.length]);
     }
   }
@@ -126,41 +138,89 @@ function renderHome() {
   // Streak
   document.getElementById('streak-count').textContent = streak.count;
   document.getElementById('streak-best').textContent  = `Meilleur : ${streak.best} jour${streak.best !== 1 ? 's' : ''}`;
+
+  // Pillar progress cards
+  const pillarSection = document.getElementById('pillar-section');
+  if (pillarSection) {
+    let pillarHTML = '<div class="section-title">Progression par pilier</div><div class="pillar-cards-row">';
+    PILLARS.forEach(p => {
+      const donePillar = p.sessions.filter(sid => progress[sid]).length;
+      const pctPillar  = Math.round((donePillar / p.sessions.length) * 100);
+      pillarHTML += `
+        <div class="pillar-card">
+          <div class="pillar-card-header">
+            <div class="pillar-card-label">${p.label}</div>
+            <div class="pillar-card-pct" style="color:${p.color}">${pctPillar}%</div>
+          </div>
+          <div class="pillar-card-bar-wrap">
+            <div class="pillar-card-bar-fill" style="width:${pctPillar}%;background:${p.color}"></div>
+          </div>
+        </div>`;
+    });
+    pillarHTML += '</div>';
+    pillarSection.innerHTML = pillarHTML;
+  }
 }
 
 // ── SESSIONS ─────────────────────────────────────────────────
 function renderSessions() {
-  const progress = STATE.progress;
+  const progress  = STATE.progress;
   const container = document.getElementById('sessions-list');
   container.innerHTML = '';
-  const colors = ['#5856D6','#007AFF','#FF2D55','#FF9500','#34C759','#AF52DE','#FF3B30','#0099CC','#5856D6','#FF9F0A'];
 
-  CONTENT.sessions.forEach((session, idx) => {
-    const isDone    = !!progress[session.id];
-    const isAtelier = session.type === 'atelier';
-    const div = document.createElement('div');
-    div.className = 'session-card';
-    div.innerHTML = `
-      <div class="session-icon-wrap" style="background:${colors[idx]}22;">
-        <span style="font-size:26px;">${session.icon}</span>
-      </div>
-      <div class="session-info">
-        <div class="session-number">Session ${session.id}</div>
-        <div class="session-theme">${session.theme}</div>
-        <div class="session-meta">${session.format}</div>
-        <div class="session-objective">${session.objectif || ''}</div>
-        <div class="session-badges">
-          <span class="badge badge-${session.type}">${isAtelier ? '⚡ Atelier' : '📖 Normale'}</span>
-          <span class="badge badge-duration">${session.duration}</span>
-          ${isDone ? '<span class="badge badge-done">✓ Complétée</span>' : ''}
-          ${session.id === 6 && !progress[5] ? '<span class="badge badge-prereq">Après S5</span>' : ''}
-          ${session.id === 10 && !progress[9] ? '<span class="badge badge-prereq">Après S9</span>' : ''}
-        </div>
-      </div>
-      ${isDone ? '<div class="session-check">✓</div>' : ''}
+  // Badge label + style per session type
+  const typeBadge = {
+    'cours':   { label: '📖 Cours',   cls: 'badge-cours'   },
+    'atelier': { label: '⚡ Atelier', cls: 'badge-atelier' },
+    'bilan':   { label: '🏛️ Bilan',  cls: 'badge-bilan'   },
+    'normale': { label: '📖 Cours',   cls: 'badge-cours'   },
+  };
+
+  PILLARS.forEach(pillar => {
+    const pillarDone  = pillar.sessions.filter(sid => progress[sid]).length;
+    const pillarTotal = pillar.sessions.length;
+
+    // Pillar header
+    const header = document.createElement('div');
+    header.className = 'sessions-pillar-header';
+    header.innerHTML = `
+      <div class="sessions-pillar-label">${pillar.label}</div>
+      <div class="sessions-pillar-progress" style="color:${pillar.color}">${pillarDone}/${pillarTotal}</div>
     `;
-    div.addEventListener('click', () => openSession(session.id));
-    container.appendChild(div);
+    container.appendChild(header);
+
+    // Sessions in this pillar
+    pillar.sessions.forEach(sid => {
+      const session = CONTENT.sessions.find(s => s.id === sid);
+      if (!session) return;
+      const isDone = !!progress[session.id];
+      const tb = typeBadge[session.type] || typeBadge['cours'];
+      const div = document.createElement('div');
+      div.className = 'session-card';
+      div.innerHTML = `
+        <div class="session-icon-wrap" style="background:${pillar.color}22;">
+          <span style="font-size:26px;">${session.icon}</span>
+        </div>
+        <div class="session-info">
+          <div class="session-number">Session ${session.id}</div>
+          <div class="session-theme">${session.theme}</div>
+          <div class="session-meta">${session.format}</div>
+          <div class="session-objective">${session.objectif || ''}</div>
+          <div class="session-badges">
+            <span class="badge ${tb.cls}">${tb.label}</span>
+            <span class="badge badge-duration">${session.duration}</span>
+            ${isDone ? '<span class="badge badge-done">✓ Complétée</span>' : ''}
+            ${session.id === 6  && !progress[5]  ? '<span class="badge badge-prereq">Après S5</span>'  : ''}
+            ${session.id === 10 && !progress[9]  ? '<span class="badge badge-prereq">Après S9</span>'  : ''}
+            ${session.id === 14 && !progress[13] ? '<span class="badge badge-prereq">Après S13</span>' : ''}
+            ${session.id === 18 && !progress[17] ? '<span class="badge badge-prereq">Après S17</span>' : ''}
+          </div>
+        </div>
+        ${isDone ? '<div class="session-check">✓</div>' : ''}
+      `;
+      div.addEventListener('click', () => openSession(session.id));
+      container.appendChild(div);
+    });
   });
 }
 
@@ -265,34 +325,63 @@ function renderDetailTab(tab) {
       return;
     }
 
+    const sid = session.id;
+    const exState = SESSION_EXERCISE_STATE[sid] || {};
+
     // ── MCQ interactif ──
     if (session.quizMcq && session.quizMcq.length) {
-      const sid = session.id;
       html += `<div class="section-label-sm">🎯 Quiz interactif</div>`;
       html += `<div class="mcq-block" id="mcq-block-${sid}">`;
       session.quizMcq.forEach((q, qi) => {
-        html += `<div class="mcq-card" id="mcq-${sid}-${qi}">
+        const prevAnswer = exState.mcq && exState.mcq[qi] !== undefined ? exState.mcq[qi] : null;
+        const alreadyAnswered = prevAnswer !== null;
+        html += `<div class="mcq-card" id="mcq-${sid}-${qi}" ${alreadyAnswered ? 'data-answered="1"' : ''}>
           <div class="mcq-num">Question ${qi + 1} / ${session.quizMcq.length}</div>
           <div class="mcq-q">${q.q}</div>
           <div class="mcq-options">`;
         q.options.forEach((opt, oi) => {
-          html += `<button class="mcq-opt" onclick="window.answerMcq(${sid},${qi},${oi})">${opt}</button>`;
+          let cls = 'mcq-opt';
+          if (alreadyAnswered) {
+            if (oi === q.answer) cls += ' mcq-opt-correct';
+            else if (oi === prevAnswer) cls += ' mcq-opt-wrong';
+          }
+          html += `<button class="mcq-opt ${alreadyAnswered ? (oi === q.answer ? 'mcq-opt-correct' : (oi === prevAnswer ? 'mcq-opt-wrong' : '')) : ''}"
+            onclick="window.answerMcq(${sid},${qi},${oi})"
+            ${alreadyAnswered ? 'disabled' : ''}>${opt}</button>`;
         });
         html += `</div>
-          <div class="mcq-explication" id="mcq-expl-${sid}-${qi}" style="display:none">${q.explication}</div>
+          <div class="mcq-explication" id="mcq-expl-${sid}-${qi}" style="${alreadyAnswered ? '' : 'display:none'}">${q.explication}</div>
         </div>`;
       });
-      html += `<div class="mcq-score" id="mcq-score-${sid}" style="display:none"></div>`;
+      // Score si toutes répondues
+      const allAnswered = exState.mcq && Object.keys(exState.mcq).length === session.quizMcq.length;
+      let scoreHTML = '';
+      if (allAnswered) {
+        const correct = session.quizMcq.filter((mq, qi) => exState.mcq[qi] === mq.answer).length;
+        const pct = Math.round((correct / session.quizMcq.length) * 100);
+        const msg = pct === 100 ? '🏆 Parfait !' : pct >= 66 ? '✓ Bien !' : '↩ Revoir le cours';
+        scoreHTML = `<div class="mcq-score" id="mcq-score-${sid}"><span class="mcq-score-num">${correct}/${session.quizMcq.length}</span> <span class="mcq-score-label">${msg}</span></div>`;
+      } else {
+        scoreHTML = `<div class="mcq-score" id="mcq-score-${sid}" style="display:none"></div>`;
+      }
+      html += scoreHTML;
       html += `</div>`;
     }
 
-    // ── Quiz flashcards (open Q&A) ──
+    // ── Quiz flashcards (open Q&A) avec active recall ──
     if (session.quiz && session.quiz.length) {
       html += '<div class="section-label-sm" style="margin-top:16px;">📖 Questions approfondies</div>';
       session.quiz.forEach((q, i) => {
+        const recallKey = `recall_${i}`;
+        const savedRecall = exState.recallTexts && exState.recallTexts[recallKey] ? exState.recallTexts[recallKey] : '';
         html += `
           <div class="quiz-card">
             <div class="quiz-q">${q.q}</div>
+            <div class="recall-wrap">
+              <div class="recall-label">Votre réflexion</div>
+              <textarea class="recall-textarea" rows="3" placeholder="Notez votre réponse avant de voir la correction…"
+                oninput="saveRecallText(${sid}, '${recallKey}', this.value)">${savedRecall}</textarea>
+            </div>
             <button class="quiz-reveal-btn" onclick="revealAnswer(this)">Voir la réponse</button>
             <div class="quiz-answer">${q.a}</div>
           </div>`;
@@ -314,9 +403,16 @@ function renderDetailTab(tab) {
           </div>
           <div class="exercise-instruction">${ex.instruction}</div>`;
         ex.cases.forEach((c, i) => {
+          const caseKey = `case_${i}`;
+          const savedCase = exState.recallTexts && exState.recallTexts[caseKey] ? exState.recallTexts[caseKey] : '';
           html += `
             <div class="exercise-case">
               <div class="exercise-case-text">${c.text}</div>
+              <div class="recall-wrap">
+                <div class="recall-label">Votre réponse</div>
+                <textarea class="recall-textarea" rows="3" placeholder="Rédigez votre réponse avant de voir la correction…"
+                  oninput="saveRecallText(${sid}, '${caseKey}', this.value)">${savedCase}</textarea>
+              </div>
               <button class="quiz-reveal-btn" onclick="revealAnswer(this)">Voir la correction</button>
               <div class="quiz-answer">${c.answer}</div>
             </div>`;
@@ -328,15 +424,16 @@ function renderDetailTab(tab) {
     // ── Exercice d'écriture avec Claude ──
     if (session.writingExercise) {
       const we = session.writingExercise;
-      const sid = session.id;
+      const savedDraft = localStorage.getItem(`fsp_we_${sid}`) || '';
       html += `<div class="section-label-sm" style="margin-top:16px;">✍️ Exercice d'écriture</div>`;
       html += `<div class="writing-exercise-card">
         <div class="we-header">
-          <div class="we-title">${we.title}</div>
+          <div class="we-title">${we.title} <span class="we-saved-badge" id="we-saved-${sid}">✓ Sauvegardé</span></div>
           <div class="we-duration">⏱ ${we.duration}</div>
         </div>
         <div class="we-instruction">${we.instruction}</div>
-        <textarea class="we-textarea" id="we-text-${sid}" placeholder="Rédigez votre réponse ici…" rows="8"></textarea>
+        <textarea class="we-textarea" id="we-text-${sid}" placeholder="Rédigez votre réponse ici…" rows="8"
+          oninput="saveWeDraft(${sid}, this.value)">${savedDraft}</textarea>
         <div class="we-actions">
           <button class="we-claude-btn" onclick="window.copyWritingToClaudePrompt(${sid})">
             🤖 Corriger avec Claude
@@ -399,37 +496,6 @@ function renderDetailTab(tab) {
   }
 }
 
-// ── Claude prompt builder ─────────────────────────────────────
-function buildClaudePrompt(session, exercise) {
-  return `Tu es mon professeur de rhétorique — exigeant, précis, ancré dans la tradition mais tourné vers l'usage immédiat.
-
-## Contexte
-Je travaille sur la Session ${session.id} du programme "Forger sa Parole" : **${session.theme}**.
-Objectif de cette session : ${session.objectif}
-
-## Exercice
-**${exercise.title}** (${exercise.duration})
-${exercise.instruction}
-
-## Ma réponse
-[Écris ta réponse ici]
-
-## Consignes de correction
-Évalue ma réponse sur 4 axes (note de 1 à 5 pour chacun) :
-1. **Clarté** — Est-ce que je m'exprime sans ambiguïté ?
-2. **Précision** — Est-ce que j'utilise les bons mots, les bons concepts ?
-3. **Profondeur** — Est-ce que je vais au-delà de la surface du sujet ?
-4. **Style** — Est-ce que la forme sert le fond ?
-
-Pour chaque axe : note + une phrase d'explication + le mot ou la tournure exacte à corriger si nécessaire.
-Puis : 1 point fort et 1 action concrète à appliquer dans les 7 jours.
-Ne jamais donner de feedback vague ("c'est bien") — toujours le mot ou la tournure exacte.`;
-}
-
-function escapeBacktick(str) {
-  return str.replace(/`/g, '\\`').replace(/\$/g, '\\$');
-}
-
 // ── MCQ interactif ────────────────────────────────────────────
 window.answerMcq = function(sessionId, questionIndex, selectedOption) {
   const session = CONTENT.sessions.find(s => s.id === sessionId);
@@ -440,6 +506,11 @@ window.answerMcq = function(sessionId, questionIndex, selectedOption) {
   const card = document.getElementById(`mcq-${sessionId}-${questionIndex}`);
   if (!card || card.dataset.answered) return;
   card.dataset.answered = '1';
+
+  // Persist to SESSION_EXERCISE_STATE
+  if (!SESSION_EXERCISE_STATE[sessionId]) SESSION_EXERCISE_STATE[sessionId] = {};
+  if (!SESSION_EXERCISE_STATE[sessionId].mcq) SESSION_EXERCISE_STATE[sessionId].mcq = {};
+  SESSION_EXERCISE_STATE[sessionId].mcq[questionIndex] = selectedOption;
 
   const opts = card.querySelectorAll('.mcq-opt');
   opts.forEach((btn, i) => {
@@ -538,19 +609,23 @@ Ne jamais donner de feedback vague ("c'est bien écrit"). Toujours citer le mot 
   });
 };
 
-function copyToClaudePrompt(prompt) {
-  navigator.clipboard.writeText(prompt).then(() => {
-    showToast('Prompt copié ! Collez-le dans votre Projet Claude.');
-  }).catch(() => {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = prompt;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('Prompt copié !');
-  });
+// ── Sauvegarde automatique exercice d'écriture ───────────────
+function saveWeDraft(sessionId, text) {
+  localStorage.setItem(`fsp_we_${sessionId}`, text);
+  // Afficher badge "Sauvegardé" fugacement
+  const badge = document.getElementById(`we-saved-${sessionId}`);
+  if (badge) {
+    badge.classList.add('visible');
+    clearTimeout(badge._hideTimer);
+    badge._hideTimer = setTimeout(() => badge.classList.remove('visible'), 2000);
+  }
+}
+
+// ── Sauvegarde texte de rappel actif ─────────────────────────
+function saveRecallText(sessionId, key, text) {
+  if (!SESSION_EXERCISE_STATE[sessionId]) SESSION_EXERCISE_STATE[sessionId] = {};
+  if (!SESSION_EXERCISE_STATE[sessionId].recallTexts) SESSION_EXERCISE_STATE[sessionId].recallTexts = {};
+  SESSION_EXERCISE_STATE[sessionId].recallTexts[key] = text;
 }
 
 function showToast(msg) {
@@ -568,7 +643,7 @@ function toggleComplete(sessionId) {
     updateStreak();
     // Jalon de progression : toast spécial aux seuils
     const done = Object.values(STATE.progress).filter(Boolean).length;
-    const milestones = { 1: 'Première session terminée — bon début ! 🎯', 5: 'Mi-parcours — tu tiens le cap ! 🔥', 10: 'Programme complet ! 🏆 Vir bonus dicendi peritus.' };
+    const milestones = { 1: 'Première session terminée — bon début ! 🎯', 9: 'Mi-parcours — tu tiens le cap ! 🔥', 18: 'Programme complet ! 🏆 Vir bonus dicendi peritus.' };
     if (milestones[done]) {
       setTimeout(() => showToast(milestones[done]), 1500); // après la célébration
     }
@@ -677,14 +752,26 @@ function flipFlashcard() {
   // La mémorisation est volontaire uniquement via le bouton du modal — pas automatique au flip
 }
 
+function getFilteredVocab() {
+  const filter = STATE.currentVocabFilter;
+  const search = (document.getElementById('vocab-search')?.value || '').toLowerCase().trim();
+  return CONTENT.vocabulary.filter(v => {
+    const matchCat    = filter === 'Tous' || v.category === filter;
+    const matchSearch = !search || v.word.toLowerCase().includes(search) || v.def.toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+}
+
 function nextFlashcard() {
-  const filtered = CONTENT.vocabulary.filter(v => STATE.currentVocabFilter === 'Tous' || v.category === STATE.currentVocabFilter);
+  const filtered = getFilteredVocab();
+  if (!filtered.length) return;
   STATE.flashcardIndex = (STATE.flashcardIndex + 1) % filtered.length;
   renderVocabFlashcard(filtered);
 }
 
 function prevFlashcard() {
-  const filtered = CONTENT.vocabulary.filter(v => STATE.currentVocabFilter === 'Tous' || v.category === STATE.currentVocabFilter);
+  const filtered = getFilteredVocab();
+  if (!filtered.length) return;
   STATE.flashcardIndex = (STATE.flashcardIndex - 1 + filtered.length) % filtered.length;
   renderVocabFlashcard(filtered);
 }
