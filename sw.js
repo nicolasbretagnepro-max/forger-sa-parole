@@ -2,7 +2,7 @@
 // FORGER SA PAROLE — Service Worker (offline support)
 // ============================================================
 
-const CACHE_NAME = 'fsp-v1';
+const CACHE_NAME = 'fsp-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -10,6 +10,7 @@ const ASSETS = [
   './app.js',
   './content.js',
   './manifest.json',
+  './icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png'

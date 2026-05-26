@@ -38,10 +38,21 @@ function updateStreak() {
   let s = STATE.streak;
   if (s.lastDate === today) return;
   const yesterday = new Date(Date.now() - 86400000).toDateString();
+  const wasStreak = s.count;
+  const broken = s.lastDate && s.lastDate !== yesterday && s.count > 1;
   s.count = s.lastDate === yesterday ? s.count + 1 : 1;
   s.best  = Math.max(s.best, s.count);
   s.lastDate = today;
   localStorage.setItem('fsp_streak', JSON.stringify(s));
+  // Message de compassion si streak perdu
+  if (broken) {
+    setTimeout(() => showToast(`Streak de ${wasStreak} jours interrompu — mais tu reviens 💪`), 500);
+  }
+  // Célébration des jalons de streak
+  const streakMilestones = { 3: 'Streak de 3 jours 🔥', 7: 'Une semaine de suite ! 🌟', 30: 'Streak de 30 jours — exceptionnel 🏆' };
+  if (streakMilestones[s.count]) {
+    setTimeout(() => showToast(streakMilestones[s.count]), 1000);
+  }
 }
 
 function saveBaseline(total) {
@@ -50,7 +61,19 @@ function saveBaseline(total) {
 
 function markWordLearned(word) {
   const w = STATE.wordsLearned;
-  if (!w.includes(word)) { w.push(word); localStorage.setItem('fsp_words', JSON.stringify(w)); }
+  if (!w.includes(word)) {
+    w.push(word);
+    localStorage.setItem('fsp_words', JSON.stringify(w));
+    // Mise à jour de la stat "Mots" sur l'accueil si visible
+    const statWords = document.getElementById('stat-words');
+    if (statWords) statWords.textContent = w.length;
+    // Jalon de mémorisation : toast de félicitation aux seuils clés
+    const milestones = [10, 20, 35];
+    if (milestones.includes(w.length)) {
+      const labels = { 10: '10 mots mémorisés 🎓', 20: '20 mots mémorisés 🔥', 35: 'Vocabulaire maîtrisé ! 🏆' };
+      showToast(labels[w.length]);
+    }
+  }
 }
 
 // ── Navigation ───────────────────────────────────────────────
@@ -130,6 +153,8 @@ function renderSessions() {
           <span class="badge badge-${session.type}">${isAtelier ? '⚡ Atelier' : '📖 Normale'}</span>
           <span class="badge badge-duration">${session.duration}</span>
           ${isDone ? '<span class="badge badge-done">✓ Complétée</span>' : ''}
+          ${session.id === 6 && !progress[5] ? '<span class="badge badge-prereq">Après S5</span>' : ''}
+          ${session.id === 10 && !progress[9] ? '<span class="badge badge-prereq">Après S9</span>' : ''}
         </div>
       </div>
       ${isDone ? '<div class="session-check">✓</div>' : ''}
@@ -227,9 +252,43 @@ function renderDetailTab(tab) {
   // ── EXERCICES ──
   if (tab === 'exercices') {
     let html = '<div style="margin-bottom:12px;">';
-    // Quiz flashcards
+    const hasContent = (session.quiz && session.quiz.length) || session.exercise || session.quizMcq || session.writingExercise;
+
+    if (!hasContent) {
+      html += `<div class="empty-exercise-msg">
+        <div class="empty-exercise-icon">📋</div>
+        <div class="empty-exercise-title">Session sans atelier pratique</div>
+        <div class="empty-exercise-desc">Cette session est une révision ou un bilan — elle n'a pas d'exercice dédié. Revois les sessions précédentes ou consulte l'onglet Ressources.</div>
+      </div>`;
+      html += '</div>';
+      pane.innerHTML = html;
+      return;
+    }
+
+    // ── MCQ interactif ──
+    if (session.quizMcq && session.quizMcq.length) {
+      const sid = session.id;
+      html += `<div class="section-label-sm">🎯 Quiz interactif</div>`;
+      html += `<div class="mcq-block" id="mcq-block-${sid}">`;
+      session.quizMcq.forEach((q, qi) => {
+        html += `<div class="mcq-card" id="mcq-${sid}-${qi}">
+          <div class="mcq-num">Question ${qi + 1} / ${session.quizMcq.length}</div>
+          <div class="mcq-q">${q.q}</div>
+          <div class="mcq-options">`;
+        q.options.forEach((opt, oi) => {
+          html += `<button class="mcq-opt" onclick="window.answerMcq(${sid},${qi},${oi})">${opt}</button>`;
+        });
+        html += `</div>
+          <div class="mcq-explication" id="mcq-expl-${sid}-${qi}" style="display:none">${q.explication}</div>
+        </div>`;
+      });
+      html += `<div class="mcq-score" id="mcq-score-${sid}" style="display:none"></div>`;
+      html += `</div>`;
+    }
+
+    // ── Quiz flashcards (open Q&A) ──
     if (session.quiz && session.quiz.length) {
-      html += '<div class="section-label-sm">Quiz de compréhension</div>';
+      html += '<div class="section-label-sm" style="margin-top:16px;">📖 Questions approfondies</div>';
       session.quiz.forEach((q, i) => {
         html += `
           <div class="quiz-card">
@@ -240,26 +299,12 @@ function renderDetailTab(tab) {
       });
     }
 
-    // Atelier exercise
+    // ── Atelier exercise (cases) ──
     if (session.exercise) {
       const ex = session.exercise;
-      let casesHTML = '';
       if (ex.cases && ex.cases.length) {
-        ex.cases.forEach((c, i) => {
-          casesHTML += `
-            <div class="exercise-case">
-              <div class="exercise-case-text">${c.text}</div>
-              <button class="quiz-reveal-btn" onclick="revealAnswer(this)">Voir la correction</button>
-              <div class="quiz-answer">${c.answer}</div>
-            </div>`;
-        });
-      } else {
-        // Open exercise (S9) — show Claude copy button
-        casesHTML = `<div class="open-exercise-hint">Exercice libre — utilisez le bouton ci-dessous pour le traiter dans votre Projet Claude.</div>`;
-      }
-
-      html += `
-        <div class="exercise-card">
+        html += `<div class="section-label-sm" style="margin-top:16px;">⚡ Atelier pratique</div>`;
+        html += `<div class="exercise-card">
           <div class="exercise-header">
             <span class="exercise-icon">⚡</span>
             <div>
@@ -267,20 +312,40 @@ function renderDetailTab(tab) {
               <div class="exercise-duration">⏱ ${ex.duration}</div>
             </div>
           </div>
-          <div class="exercise-instruction">${ex.instruction}</div>
-          ${casesHTML}
-        </div>`;
-
-      // Claude copy button for writing exercises
-      const claudePrompt = buildClaudePrompt(session, ex);
-      html += `
-        <div class="claude-btn-wrap">
-          <button class="claude-copy-btn" onclick="copyToClaudePrompt(\`${escapeBacktick(claudePrompt)}\`)">
-            <span>🤖</span> Copier le prompt pour Claude
-          </button>
-          <div class="claude-hint">Copiez, collez dans votre Projet Claude, rédigez votre réponse en dessous — Claude vous corrigera selon la grille de cette session.</div>
-        </div>`;
+          <div class="exercise-instruction">${ex.instruction}</div>`;
+        ex.cases.forEach((c, i) => {
+          html += `
+            <div class="exercise-case">
+              <div class="exercise-case-text">${c.text}</div>
+              <button class="quiz-reveal-btn" onclick="revealAnswer(this)">Voir la correction</button>
+              <div class="quiz-answer">${c.answer}</div>
+            </div>`;
+        });
+        html += `</div>`;
+      }
     }
+
+    // ── Exercice d'écriture avec Claude ──
+    if (session.writingExercise) {
+      const we = session.writingExercise;
+      const sid = session.id;
+      html += `<div class="section-label-sm" style="margin-top:16px;">✍️ Exercice d'écriture</div>`;
+      html += `<div class="writing-exercise-card">
+        <div class="we-header">
+          <div class="we-title">${we.title}</div>
+          <div class="we-duration">⏱ ${we.duration}</div>
+        </div>
+        <div class="we-instruction">${we.instruction}</div>
+        <textarea class="we-textarea" id="we-text-${sid}" placeholder="Rédigez votre réponse ici…" rows="8"></textarea>
+        <div class="we-actions">
+          <button class="we-claude-btn" onclick="window.copyWritingToClaudePrompt(${sid})">
+            🤖 Corriger avec Claude
+          </button>
+        </div>
+        <div class="we-hint">Votre texte + les critères de correction seront copiés dans le presse-papier. Collez dans votre Projet Claude pour obtenir une correction détaillée.</div>
+      </div>`;
+    }
+
     html += '</div>';
     pane.innerHTML = html;
   }
@@ -306,9 +371,10 @@ function renderDetailTab(tab) {
 
     if (r.discours && r.discours.length) {
       html += '<div class="res-section"><div class="res-section-title">🎙️ Discours à analyser</div>';
+      html += '<div class="res-external-hint">⚠️ Les liens s\'ouvrent dans Safari — glisse depuis le bord gauche pour revenir.</div>';
       r.discours.forEach(d => {
         html += `
-          <div class="res-card res-card-link" onclick="window.open('${d.lien}','_blank')">
+          <div class="res-card res-card-link" onclick="openExternal('${d.lien}')">
             <div class="res-card-title">${d.titre} <span class="res-link-icon">↗</span></div>
             <div class="res-card-text">${d.desc}</div>
           </div>`;
@@ -364,6 +430,114 @@ function escapeBacktick(str) {
   return str.replace(/`/g, '\\`').replace(/\$/g, '\\$');
 }
 
+// ── MCQ interactif ────────────────────────────────────────────
+window.answerMcq = function(sessionId, questionIndex, selectedOption) {
+  const session = CONTENT.sessions.find(s => s.id === sessionId);
+  if (!session || !session.quizMcq) return;
+  const q = session.quizMcq[questionIndex];
+  if (!q) return;
+
+  const card = document.getElementById(`mcq-${sessionId}-${questionIndex}`);
+  if (!card || card.dataset.answered) return;
+  card.dataset.answered = '1';
+
+  const opts = card.querySelectorAll('.mcq-opt');
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('mcq-opt-correct');
+    else if (i === selectedOption) btn.classList.add('mcq-opt-wrong');
+  });
+
+  const expl = document.getElementById(`mcq-expl-${sessionId}-${questionIndex}`);
+  if (expl) expl.style.display = '';
+
+  // Vérifier si toutes les questions ont été répondues
+  const block = document.getElementById(`mcq-block-${sessionId}`);
+  if (!block) return;
+  const allCards = block.querySelectorAll('.mcq-card');
+  const answered = block.querySelectorAll('.mcq-card[data-answered]');
+  if (answered.length === allCards.length) {
+    // Calculer le score
+    let correct = 0;
+    session.quizMcq.forEach((mq, qi) => {
+      const c = document.getElementById(`mcq-${sessionId}-${qi}`);
+      if (!c) return;
+      const sel = parseInt(c.dataset.answered === '1' ? c.querySelector('.mcq-opt-correct, .mcq-opt-wrong') && (() => {
+        const opts2 = c.querySelectorAll('.mcq-opt');
+        let sel2 = -1;
+        opts2.forEach((b, i) => { if (b.classList.contains('mcq-opt-correct') || (b.classList.contains('mcq-opt-wrong'))) sel2 = i; });
+        return sel2;
+      })() : -1, 10);
+      // Vérifier si la réponse était correcte (option correcte a la classe mcq-opt-correct et n'est pas wronge)
+      const correctBtn = c.querySelector('.mcq-opt-correct');
+      const wrongBtn = c.querySelector('.mcq-opt-wrong');
+      if (correctBtn && !wrongBtn) correct++;
+      // ou si l'utilisateur a sélectionné la bonne réponse (pas de wrong)
+    });
+
+    // Calcul simplifié : compter les cartes sans mcq-opt-wrong
+    correct = 0;
+    session.quizMcq.forEach((mq, qi) => {
+      const c = document.getElementById(`mcq-${sessionId}-${qi}`);
+      if (c && !c.querySelector('.mcq-opt-wrong')) correct++;
+    });
+
+    const scoreEl = document.getElementById(`mcq-score-${sessionId}`);
+    if (scoreEl) {
+      const pct = Math.round((correct / session.quizMcq.length) * 100);
+      let msg = pct === 100 ? '🏆 Parfait !' : pct >= 66 ? '✓ Bien !' : '↩ Revoir le cours';
+      scoreEl.innerHTML = `<span class="mcq-score-num">${correct}/${session.quizMcq.length}</span> <span class="mcq-score-label">${msg}</span>`;
+      scoreEl.style.display = '';
+      if (pct === 100) showToast('Quiz parfait ! 🏆');
+    }
+  }
+};
+
+// ── Exercice d'écriture → Claude ─────────────────────────────
+window.copyWritingToClaudePrompt = function(sessionId) {
+  const session = CONTENT.sessions.find(s => s.id === sessionId);
+  if (!session || !session.writingExercise) return;
+  const we = session.writingExercise;
+  const textarea = document.getElementById(`we-text-${sessionId}`);
+  const userText = textarea ? textarea.value.trim() : '';
+
+  const prompt = `Tu es mon professeur de rhétorique et de communication — exigeant, précis, ancré dans la tradition rhétorique mais tourné vers l'usage immédiat.
+
+## Contexte
+Je travaille sur la Session ${session.id} du programme "Forger sa Parole" : **${session.theme}**.
+Objectif : ${session.objectif}
+
+## Exercice réalisé
+**${we.title}** (${we.duration})
+${we.instruction}
+
+## Ma réponse
+${userText || '[ÉCRIS TA RÉPONSE ICI AVANT DE COPIER]'}
+
+## Consignes de correction
+${we.correctionCriteria}
+
+En plus de la grille ci-dessus :
+- Identifie la phrase ou le passage le plus fort de ma réponse — et dis pourquoi.
+- Identifie la phrase ou le passage le plus faible — et réécris-le en mieux.
+- Donne une note globale /20 avec justification en 2 lignes.
+- Termine par une action concrète que je peux appliquer dans les 7 prochains jours.
+
+Ne jamais donner de feedback vague ("c'est bien écrit"). Toujours citer le mot ou la tournure exacte à améliorer.`;
+
+  navigator.clipboard.writeText(prompt).then(() => {
+    showToast('Prompt copié ! Collez dans votre Projet Claude.');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = prompt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('Prompt copié !');
+  });
+};
+
 function copyToClaudePrompt(prompt) {
   navigator.clipboard.writeText(prompt).then(() => {
     showToast('Prompt copié ! Collez-le dans votre Projet Claude.');
@@ -390,7 +564,16 @@ function showToast(msg) {
 function toggleComplete(sessionId) {
   const wasDone = !!STATE.progress[sessionId];
   saveProgress(sessionId, !wasDone);
-  if (!wasDone) { updateStreak(); showCelebration(sessionId); }
+  if (!wasDone) {
+    updateStreak();
+    // Jalon de progression : toast spécial aux seuils
+    const done = Object.values(STATE.progress).filter(Boolean).length;
+    const milestones = { 1: 'Première session terminée — bon début ! 🎯', 5: 'Mi-parcours — tu tiens le cap ! 🔥', 10: 'Programme complet ! 🏆 Vir bonus dicendi peritus.' };
+    if (milestones[done]) {
+      setTimeout(() => showToast(milestones[done]), 1500); // après la célébration
+    }
+    showCelebration(sessionId);
+  }
   renderDetailTab(STATE.currentDetailTab);
 }
 
@@ -410,8 +593,10 @@ function closeCelebration() {
 
 function revealAnswer(btn) {
   const ans = btn.nextElementSibling;
+  // Mémoriser le texte d'origine avant de l'écraser
+  if (!btn.dataset.originalText) btn.dataset.originalText = btn.textContent;
   ans.classList.toggle('visible');
-  btn.textContent = ans.classList.contains('visible') ? 'Masquer' : btn.textContent.includes('correction') ? 'Voir la correction' : 'Voir la réponse';
+  btn.textContent = ans.classList.contains('visible') ? 'Masquer' : btn.dataset.originalText;
 }
 
 // ── VOCABULARY ───────────────────────────────────────────────
@@ -482,19 +667,14 @@ function renderVocabFlashcard(filtered) {
   document.getElementById('fc-back-category').textContent = fc.category;
   document.getElementById('fc-def').textContent           = fc.def;
   document.getElementById('fc-example').textContent       = fc.example;
-  // Counter
-  const filtered2 = CONTENT.vocabulary.filter(v => STATE.currentVocabFilter === 'Tous' || v.category === STATE.currentVocabFilter);
-  document.getElementById('fc-counter').textContent = `${STATE.flashcardIndex + 1} / ${filtered2.length}`;
+  // Counter — uses the same filtered list passed as parameter (inclut la recherche textuelle)
+  document.getElementById('fc-counter').textContent = `${STATE.flashcardIndex + 1} / ${filtered.length}`;
 }
 
 function flipFlashcard() {
   STATE.flashcardFlipped = !STATE.flashcardFlipped;
   document.getElementById('flashcard').classList.toggle('flipped', STATE.flashcardFlipped);
-  // Mark as seen
-  if (STATE.flashcardFlipped && STATE.currentSession === null) {
-    const filtered = CONTENT.vocabulary.filter(v => STATE.currentVocabFilter === 'Tous' || v.category === STATE.currentVocabFilter);
-    if (filtered[STATE.flashcardIndex]) markWordLearned(filtered[STATE.flashcardIndex].word);
-  }
+  // La mémorisation est volontaire uniquement via le bouton du modal — pas automatique au flip
 }
 
 function nextFlashcard() {
@@ -517,8 +697,17 @@ function openVocabModal(v) {
   document.getElementById('modal-def').textContent      = v.def;
   document.getElementById('modal-example').textContent  = v.example;
   const learnBtn = document.getElementById('modal-learn-btn');
-  learnBtn.textContent = learned.includes(v.word) ? '✓ Mémorisé' : 'Marquer comme mémorisé';
-  learnBtn.onclick = () => { markWordLearned(v.word); closeVocabModal(); renderVocab(); };
+  const isAlreadyLearned = learned.includes(v.word);
+  learnBtn.textContent = isAlreadyLearned ? '✓ Mémorisé' : 'Marquer comme mémorisé';
+  learnBtn.className = 'modal-learn-btn' + (isAlreadyLearned ? ' modal-learn-btn-done' : '');
+  learnBtn.onclick = () => {
+    if (isAlreadyLearned) { closeVocabModal(); return; }
+    markWordLearned(v.word);
+    learnBtn.textContent = '✓ Mémorisé !';
+    learnBtn.className = 'modal-learn-btn modal-learn-btn-done';
+    // Fermeture avec délai pour que l'utilisateur voie la confirmation
+    setTimeout(() => { closeVocabModal(); renderVocab(); }, 700);
+  };
   document.getElementById('vocab-modal').classList.add('open');
 }
 
@@ -567,10 +756,16 @@ function openFigureModal(fig, color) {
       <div class="fig-exemple-text">${e.texte}</div>
     </div>`).join('');
 
+  // Réinitialiser le scroll du modal
+  const sheet = document.querySelector('.figure-modal-sheet');
+  if (sheet) sheet.scrollTop = 0;
+
   document.getElementById('figure-modal').classList.add('open');
 }
 
-function closeFigureModal() { document.getElementById('figure-modal').classList.remove('open'); }
+function closeFigureModal() {
+  document.getElementById('figure-modal').classList.remove('open');
+}
 
 // ── QUIZ / BASELINE ───────────────────────────────────────────
 function renderQuiz() {
@@ -637,6 +832,100 @@ function submitScore() {
   saveBaseline(val);
   renderQuiz();
   showToast('Score enregistré !');
+}
+
+function resetAllProgress() {
+  if (!confirm('Réinitialiser toute la progression ? Sessions, mots mémorisés, streak et score seront effacés.')) return;
+  ['fsp_progress', 'fsp_streak', 'fsp_baseline', 'fsp_words', 'fsp_log'].forEach(k => localStorage.removeItem(k));
+  renderQuiz();
+  renderHome();
+  showToast('Progression réinitialisée.');
+}
+
+// ── Révision rapide ───────────────────────────────────────────
+function startQuickReview() {
+  const learned = STATE.wordsLearned;
+  const unlearned = CONTENT.vocabulary.filter(v => !learned.includes(v.word));
+  if (!unlearned.length) {
+    showToast('Bravo — tous les mots sont mémorisés ! 🏆');
+    return;
+  }
+  // Sélectionner jusqu'à 5 mots aléatoires non mémorisés
+  const shuffled = unlearned.sort(() => Math.random() - 0.5).slice(0, 5);
+  openQuickReviewModal(shuffled);
+}
+
+function openQuickReviewModal(words) {
+  let idx = 0;
+  let flipped = false;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'quick-review-overlay';
+  overlay.className = 'qr-overlay';
+
+  function render() {
+    const w = words[idx];
+    overlay.innerHTML = `
+      <div class="qr-sheet">
+        <div class="qr-header">
+          <div class="qr-close" onclick="document.getElementById('quick-review-overlay').remove()">✕</div>
+          <div class="qr-title">Révision rapide</div>
+          <div class="qr-progress">${idx + 1} / ${words.length}</div>
+        </div>
+        <div class="qr-card ${flipped ? 'flipped' : ''}" id="qr-card" onclick="toggleQrFlip()">
+          <div class="qr-face qr-front">
+            <div class="qr-cat">${w.category}</div>
+            <div class="qr-word">${w.word}</div>
+            <div class="qr-hint">Touche pour révéler</div>
+          </div>
+          <div class="qr-face qr-back">
+            <div class="qr-cat">${w.category}</div>
+            <div class="qr-def">${w.def}</div>
+            <div class="qr-example">${w.example}</div>
+          </div>
+        </div>
+        <div class="qr-actions">
+          <button class="qr-btn qr-btn-skip" onclick="qrNext()">→ Suivant</button>
+          <button class="qr-btn qr-btn-learn" onclick="qrMarkAndNext('${w.word}')">✓ Mémorisé</button>
+        </div>
+        <div class="qr-dots">${words.map((_, i) => `<div class="qr-dot ${i < idx ? 'done' : i === idx ? 'active' : ''}"></div>`).join('')}</div>
+      </div>`;
+    flipped = false;
+  }
+
+  window.toggleQrFlip = () => {
+    flipped = !flipped;
+    document.getElementById('qr-card')?.classList.toggle('flipped', flipped);
+  };
+
+  window.qrNext = () => {
+    idx++;
+    if (idx >= words.length) { overlay.remove(); showToast('Révision terminée ! 💪'); return; }
+    render();
+  };
+
+  window.qrMarkAndNext = (word) => {
+    markWordLearned(word);
+    idx++;
+    if (idx >= words.length) { overlay.remove(); showToast('Révision terminée — mots mémorisés ! 🎓'); renderVocab(); return; }
+    render();
+  };
+
+  render();
+  document.body.appendChild(overlay);
+}
+
+// ── Lien externe (iOS PWA safe) ───────────────────────────────
+function openExternal(url) {
+  // Sur iOS en mode PWA, window.open peut quitter l'app
+  // On utilise un lien <a> créé dynamiquement pour garder le contexte
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 // ── Swipe (flashcard) ─────────────────────────────────────────

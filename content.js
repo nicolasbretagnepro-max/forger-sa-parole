@@ -121,7 +121,33 @@ sessions: [
     { q: "Qu'est-ce que l'enargeia ?", a: "Technique pathétique consistant à rendre visible et présent ce qui est absent — projeter une vision si concrète que l'auditoire la ressent comme réelle. Utilisée massivement par MLK." },
     { q: "Pourquoi l'éthos est-il 'toujours premier' selon la règle pratique ?", a: "Si la crédibilité de l'orateur est nulle, l'auditoire n'écoute pas — logos et pathos ne peuvent pas fonctionner sans ce socle de confiance préalable." },
     { q: "Quelle est la différence entre persuader et démontrer selon Aristote ?", a: "La démonstration est rigoureuse et produit une certitude logique. La persuasion se fonde sur le vraisemblable et vise l'adhésion d'un auditoire raisonnable — pas la vérité absolue." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "La phronèsis, selon Aristote, désigne quelle composante de l'éthos ?",
+      options: ["La bienveillance envers l'auditoire", "La compétence perçue / prudence pratique", "La vertu morale et l'intégrité", "La capacité à émouvoir"],
+      answer: 1,
+      explication: "La phronèsis désigne la prudence pratique — l'impression que l'orateur sait de quoi il parle. L'arétè est la vertu morale, l'eunoia la bienveillance envers l'auditoire."
+    },
+    {
+      q: "Dans quel ordre mobilise-t-on les piliers selon la règle pratique ?",
+      options: ["Logos → Pathos → Éthos", "Pathos → Logos → Éthos", "Éthos d'abord, puis Pathos ouvre et Logos ferme", "Les trois simultanément, aucune hiérarchie"],
+      answer: 2,
+      explication: "L'éthos est toujours premier : sans crédibilité, personne n'écoute. Ensuite le pathos crée la disposition à croire, le logos structure et consolide l'adhésion."
+    },
+    {
+      q: "Dans 'J'Accuse' de Zola (1898), quel pilier rhétorique domine ?",
+      options: ["Éthos — Zola engage sa propre réputation", "Pathos — Zola cherche à émouvoir l'opinion publique", "Logos — structure factuelle et raisonnement vérifiable", "Un mélange parfaitement équilibré des trois"],
+      answer: 2,
+      explication: "Zola nomme, date, cite — chaque accusation est une prémisse vérifiable. C'est du logos pur. L'acte de signer construit aussi l'éthos par engagement personnel, mais le logos structure tout le texte."
+    }
+  ],
+  writingExercise: {
+    title: "Analyse rhétorique d'un discours réel",
+    duration: "~20 min",
+    instruction: "Choisissez un discours, une publicité, un email professionnel ou une prise de parole récente que vous avez observée. Rédigez une analyse rhétorique complète de 200-300 mots : (1) identifiez le pilier dominant et justifiez par des extraits précis ; (2) analysez comment les deux autres piliers sont mobilisés ou absents ; (3) évaluez l'efficacité globale selon le triangle d'Aristote et proposez une amélioration concrète.",
+    correctionCriteria: "Évalue mon analyse sur : (1) Exactitude des définitions éthos/pathos/logos (2) Pertinence des exemples tirés du discours — les extraits cités justifient-ils l'analyse ? (3) Justesse de la hiérarchisation des piliers (4) Qualité et précision de l'amélioration proposée. Note /5 sur chaque axe + reformulation d'une phrase de mon analyse qui manque de précision."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -225,7 +251,33 @@ Conclusion : Socrate est mortel.</blockquote>
     { q: "Qu'est-ce que la confusion corrélation/causalité ? Donne un exemple.", a: "Deux phénomènes corrélés ne sont pas nécessairement liés causalement. Ex : les ventes de glaces et les noyades augmentent ensemble — non pas parce que l'une cause l'autre, mais parce que les deux sont causées par la chaleur. Latin : post hoc ergo propter hoc." },
     { q: "Quelle est la technique de construction 'à l'envers' des avocats ?", a: "Partir de la conclusion souhaitée, puis remonter vers les prémisses qui la soutiennent de façon légitime. Suivi d'une auto-réfutation préventive (refutatio) pour identifier les failles avant l'adversaire." },
     { q: "Qu'est-ce que l'auditoire universel selon Perelman ?", a: "Un argument vraiment solide est celui qui convaincrait tout auditoire raisonnable, indépendamment de ses préjugés et intérêts — pas seulement l'auditoire présent." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "Qu'est-ce qu'un enthymème ?",
+      options: ["Un syllogisme dont la conclusion est fausse", "Un syllogisme dont une prémisse est sous-entendue car partagée", "Une induction à partir de cas trop peu nombreux", "Un argument circulaire qui se prouve lui-même"],
+      answer: 1,
+      explication: "L'enthymème est un syllogisme raccourci : une prémisse est sous-entendue parce que l'auditoire la partage. Cette reconstruction active crée un sentiment d'adhésion plus fort qu'un syllogisme complet explicité."
+    },
+    {
+      q: "'Les ventes de glaces et les noyades augmentent ensemble.' Quel problème logique illustre cet exemple ?",
+      options: ["La prémisse fausse ou non vérifiée", "La généralisation hâtive", "La confusion corrélation/causalité", "Le saut quantitatif"],
+      answer: 2,
+      explication: "Post hoc ergo propter hoc. La chaleur cause simultanément les deux phénomènes — la glace ne cause pas les noyades. Deux événements corrélés ne sont pas nécessairement liés causalement."
+    },
+    {
+      q: "La technique de construction 'à l'envers' des avocats consiste à...",
+      options: ["Réfuter l'adversaire avant même qu'il argumente", "Partir de la conclusion souhaitée pour remonter vers les prémisses légitimes", "Cacher la prémisse la plus fragile au centre de l'argument", "Utiliser exclusivement des preuves à charge"],
+      answer: 1,
+      explication: "On sait où on veut aller, on sélectionne les faits et raisonnements qui y mènent légitimement — puis on applique la refutatio (auto-critique) pour trouver ses propres failles avant l'adversaire."
+    }
+  ],
+  writingExercise: {
+    title: "Construire et tester un argument professionnel",
+    duration: "~20 min",
+    instruction: "Prenez une position que vous défendez ou devrez défendre prochainement (pourquoi décision X est juste, pourquoi projet Y mérite d'être lancé, pourquoi approche Z est préférable). Rédigez l'argument complet en 200-250 mots en explicitant : prémisse majeure, prémisse mineure, conclusion. Puis appliquez le test des 3 questions : la prémisse est-elle vraiment vérifiable ? la conclusion découle-t-elle logiquement ? répond-elle à la vraie question ? Identifiez et formulez la faille principale de votre propre argument — et proposez comment un adversaire honnête pourrait l'attaquer.",
+    correctionCriteria: "Évalue mon argument sur : (1) Solidité de la prémisse majeure — est-elle vraiment vérifiable ou présuppose-t-elle trop ? (2) Légitimité du raisonnement — y a-t-il un saut logique ? (3) Pertinence de la conclusion par rapport à la vraie question posée (4) Honnêteté et précision de l'auto-réfutation. Note /5 sur chaque axe + reformulation de la prémisse la plus fragile."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -354,7 +406,33 @@ La diversion peut être non intentionnelle (on suit une tangente) ou délibéré
     { q: "Décris l'homme de paille en une phrase et donne un exemple professionnel.", a: "Déformer la position adverse en une caricature plus facile à attaquer. Ex : 'Il veut réduire les réunions' → 'Il veut qu'on ne se coordonne plus jamais.'" },
     { q: "Quelle est la différence entre un sophisme et un paralogisme ?", a: "Le sophisme est délibéré (mauvaise foi rhétorique). Le paralogisme est une erreur involontaire de raisonnement. Les deux produisent une conclusion invalide." },
     { q: "Pourquoi ne pas nommer le sophisme publiquement lors d'un débat ?", a: "Cela peut être perçu comme condescendant ou agressif. Mieux vaut démonter le sophisme par le 3-temps (reformuler, questionner, proposer) sans employer le vocabulaire technique." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "'Tu critiques ma gestion du budget, mais rappelle-toi que ton projet de l'an dernier a dépassé ses coûts de 40%.' Quel sophisme ?",
+      options: ["Homme de paille", "Pente glissante", "Ad hominem tu quoque", "Appel à la majorité"],
+      answer: 2,
+      explication: "L'ad hominem tu quoque ('et toi donc ?') : attaquer le critique plutôt que la critique. Les performances passées du critique ne rendent pas sa critique invalide sur le fond — elles sont logiquement hors-sujet."
+    },
+    {
+      q: "'Soit vous soutenez ce projet à 100%, soit vous n'êtes pas un vrai membre de l'équipe.' Quel sophisme ?",
+      options: ["Diversion (red herring)", "Fausse dichotomie", "Appel à l'autorité", "Pente glissante"],
+      answer: 1,
+      explication: "La fausse dichotomie réduit à deux options un espace qui en comporte davantage : favorable sous conditions, opposé sur ce point seulement, neutre, etc. Elle force un choix artificiel et pénalise la nuance."
+    },
+    {
+      q: "Quelle est la première étape du démontage d'un sophisme en 3 temps ?",
+      options: ["Nommer le sophisme pour informer l'interlocuteur", "Proposer immédiatement une alternative plus nuancée", "Reformuler la position adverse avec précision et demander validation", "Poser une question sur la solidité du lien logique"],
+      answer: 2,
+      explication: "Reformuler d'abord : 'Si je comprends bien, tu soutiens que X parce que Y. Est-ce exact ?' Cette étape seule démantèle souvent l'homme de paille — elle montre qu'on a entendu la vraie position."
+    }
+  ],
+  writingExercise: {
+    title: "Identifier et démonter un sophisme réel",
+    duration: "~20 min",
+    instruction: "Identifiez un sophisme que vous avez entendu récemment — réunion, médias, conversation, publicité, débat politique. Rédigez en 200-300 mots : (1) le contexte et la citation exacte ou fidèlement reconstituée du sophisme ; (2) le nom du sophisme et la démonstration que c'en est un (quelle règle logique exacte est violée ?) ; (3) votre réponse complète en 3 temps — reformuler, questionner le lien, proposer une alternative — rédigée comme si vous parliez en temps réel, sans jamais prononcer le mot 'sophisme'.",
+    correctionCriteria: "Évalue ma réponse sur : (1) Exactitude de l'identification — est-ce vraiment ce sophisme, ou un autre ? (2) Clarté de la démonstration logique — la règle violée est-elle bien explicitée ? (3) Efficacité du 3-temps — neutralise-t-il le sophisme sans confrontation ouverte ? (4) Naturel et fluidité à l'oral — est-ce qu'on pourrait prononcer ces phrases ? Note /5 + reformulation de l'étape la moins convaincante."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -463,7 +541,33 @@ La diversion peut être non intentionnelle (on suit une tangente) ou délibéré
     { q: "Quelle est la différence entre vocabulaire passif et actif ? Donne des chiffres.", a: "Passif : mots reconnus à la lecture/écoute (~50 000-100 000 pour un francophone cultivé). Actif : mots employés spontanément (~15 000-20 000). L'écart est de 3 à 5 fois." },
     { q: "Pourquoi Orwell dit-il que 'la langue vagabonde et les idées de troupeau vont de pair' ?", a: "Le langage vague permet de penser vaguement — et de masquer des réalités derrière des euphémismes. Une langue précise force une pensée précise. La vagueur lexicale est souvent une complice de la vagueur intellectuelle ou politique." },
     { q: "Donne la nuance entre 'prudent', 'précautionneux', 'circonspect' et 'timoré'.", a: "Prudent : actif et positif. Précautionneux : insiste sur les précautions prises. Circonspect : attention méfiante aux détails. Timoré : péjoratif, excès de prudence paralysante." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "Quelle est la différence essentielle entre vocabulaire passif et vocabulaire actif ?",
+      options: ["Le passif s'utilise à l'écrit, l'actif à l'oral spontané", "Le passif est reconnu à la lecture ; l'actif est employé spontanément en production", "Le passif contient les mots techniques, l'actif les mots courants", "Le passif est toujours plus grand chez les experts du domaine"],
+      answer: 1,
+      explication: "L'écart est de x3 à x5 : un francophone cultivé reconnaît 50 000-100 000 mots mais n'en produit spontanément que 15 000-20 000. L'enjeu est de faire passer des mots du passif à l'actif par la pratique."
+    },
+    {
+      q: "Quelle nuance distingue 'timoré' des autres synonymes de 'prudent' ?",
+      options: ["Timoré insiste sur les précautions concrètes prises avant d'agir", "Timoré est péjoratif — excès de prudence qui paralyse l'action", "Timoré est le plus positif et valorisant des synonymes", "Timoré désigne une attention méfiante et attentive aux détails"],
+      answer: 1,
+      explication: "Prudent : positif et actif. Précautionneux : insiste sur les précautions. Circonspect : méfiance attentive. Timoré : péjoratif — la prudence excessive qui paralyse. Ces quatre mots décrivent quatre personnalités."
+    },
+    {
+      q: "La méthode Feynman appliquée à un mot consiste à...",
+      options: ["Apprendre sa racine étymologique et ses dérivés principaux", "L'utiliser dans 10 phrases différentes en une semaine", "L'expliquer à voix haute comme à un enfant de 12 ans, sans dictionnaire", "Trouver 5 synonymes et noter leurs nuances précises"],
+      answer: 2,
+      explication: "Là où vous butez dans l'explication, le mot n'est pas vraiment dans votre actif — il est dans le passif. L'explication fluide et concrète, sans jargon, est le seul test fiable de la maîtrise active."
+    }
+  ],
+  writingExercise: {
+    title: "Réécriture par substitution lexicale",
+    duration: "~20 min",
+    instruction: "Prenez un email ou un texte professionnel que vous avez rédigé récemment (100-200 mots). Réécrivez-le intégralement en appliquant les 5 méthodes : bannissez les mots génériques (faire, chose, bien, intéressant, difficile, montrer, penser) et substituez-les par le mot exact ; remplacez les passifs par des actifs ; retirez les adverbes remplaçables par un adjectif plus fort ; adoptez le registre précis de votre destinataire. Présentez les deux versions côte à côte, puis commentez en 3-4 lignes les 3 substitutions les plus significatives et leur effet sur le sens.",
+    correctionCriteria: "Évalue ma réécriture sur : (1) Précision des substitutions — les mots choisis sont-ils vraiment plus exacts ou juste plus 'savants' ? (2) Cohérence du registre avec le contexte et le destinataire (3) Efficacité de la réduction des mots parasites (4) Pertinence des justifications des substitutions. Note /5 + 2-3 mots ou tournures dans ma version 'améliorée' qui restent encore imprécis."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -576,7 +680,33 @@ La diversion peut être non intentionnelle (on suit une tangente) ou délibéré
     { q: "Décris l'écoute structurelle et donne un exemple de ce qu'elle permet de détecter.", a: "On identifie la logique sous-jacente : prémisses implicites, sophismes, failles non détectées par l'interlocuteur lui-même. Ex : détecter qu'une position repose sur une prémisse non vérifiée, avant même qu'elle soit formulée explicitement." },
     { q: "Quelle est la différence entre reformulation et homme de paille ?", a: "La reformulation traduit fidèlement la position de l'interlocuteur dans ses termes ou des termes plus clairs. L'homme de paille la déforme pour la rendre plus facile à attaquer." },
     { q: "Pourquoi le silence après un argument fort est-il une technique rhétorique ?", a: "Il force l'interlocuteur à combler le vide — souvent en précisant, se contredisant ou concédant. Il signale aussi la confiance : on n'a pas besoin d'ajouter, l'argument se suffit." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "L'écoute de niveau 3 (structurelle) permet principalement de...",
+      options: ["Percevoir l'état émotionnel et les peurs implicites de l'interlocuteur", "Retenir les faits et arguments explicitement formulés", "Identifier les prémisses implicites et les sophismes en temps réel", "Calibrer son registre et ses exemples sur l'interlocuteur"],
+      answer: 2,
+      explication: "Au niveau 3, on identifie la logique sous-jacente : prémisses implicites, sophismes, failles non détectées par l'interlocuteur lui-même. On peut ainsi répondre à la structure du raisonnement, pas seulement aux mots prononcés."
+    },
+    {
+      q: "Quelle est la différence clé entre reformulation et homme de paille ?",
+      options: ["La reformulation est défensive, l'homme de paille est offensif", "La reformulation traduit fidèlement la position ; l'homme de paille la déforme pour l'attaquer", "L'homme de paille est souvent involontaire, la reformulation toujours délibérée", "La reformulation s'applique aux faits, l'homme de paille aux valeurs"],
+      answer: 1,
+      explication: "La reformulation dit 'Si je comprends bien, tu soutiens X parce que Y' et attend confirmation. L'homme de paille substitue une caricature plus facile à attaquer. L'intention est radicalement inverse."
+    },
+    {
+      q: "Pourquoi le silence après un argument fort est-il efficace rhétoriquement ?",
+      options: ["Il permet de formuler mentalement son prochain point", "Il force l'interlocuteur à combler le vide, souvent en se trahissant ou concédant", "Il témoigne de la politesse et du respect envers l'interlocuteur", "Il signale qu'on n'a plus rien à ajouter sur le sujet"],
+      answer: 1,
+      explication: "Schopenhauer : l'adversaire en difficulté parle souvent trop pour combler son propre malaise — et se contredit ou concède dans le surplus. Le silence crée une pression rhétorique réelle sans aucun mot."
+    }
+  ],
+  writingExercise: {
+    title: "Analyse d'une conversation selon les 4 niveaux",
+    duration: "~20 min",
+    instruction: "Choisissez une conversation importante que vous avez eue récemment (professionnelle ou personnelle, enjeu réel). Rédigez en 250-350 mots : (1) description factuelle — contexte, enjeux, ce qui a été dit ; (2) diagnostic honnête de votre niveau d'écoute réel avec les preuves (qu'avez-vous raté ? avez-vous préparé vos réponses pendant que l'autre parlait ?) ; (3) ce qu'une écoute de niveau 3 aurait révélé sur la structure du raisonnement adverse ; (4) la reformulation exacte que vous auriez dû utiliser et la question socratique précise que vous auriez pu poser.",
+    correctionCriteria: "Évalue mon analyse sur : (1) Honnêteté et précision du diagnostic du niveau d'écoute — les preuves sont-elles convaincantes ? (2) Pertinence de ce que l'écoute structurelle aurait révélé (3) Qualité de la reformulation proposée — est-elle fidèle, sans déformer ? (4) Efficacité de la question socratique — ouvre-t-elle un espace de réflexion sans confrontation ? Note /5 + formulation alternative pour le moment le plus difficile de la conversation."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -655,7 +785,33 @@ La diversion peut être non intentionnelle (on suit une tangente) ou délibéré
     { q: "Qu'est-ce que la fluency illusion ?", a: "La confusion entre familiarité et maîtrise : relire ses notes donne une impression de compréhension parce que le texte est facile à lire. C'est une illusion — la facilité de lecture ne garantit pas la capacité à restituer." },
     { q: "Quel est l'effet de test selon Roediger & Karpicke (2006) ?", a: "S'auto-interroger sans consulter ses notes améliore la rétention à long terme de 50 à 80% par rapport à la relecture passive — même si les réponses sont incorrectes." },
     { q: "Expliquez la connexion entre l'écoute de niveau 3 (S5) et les sophismes (S3).", a: "L'écoute structurelle permet de détecter les sophismes en temps réel pendant que l'interlocuteur parle — identifier 'pente glissante' ou 'homme de paille' avant même qu'il ait fini sa phrase, tout en gardant un visage neutre." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "Qu'est-ce que la 'fluency illusion' selon les psychologues cognitifs ?",
+      options: ["L'impression de parler couramment une langue étrangère après peu d'étude", "La confusion entre facilité de lecture et vraie mémorisation/compréhension", "Une erreur logique fréquente dans les raisonnements par analogie", "La tendance à surestimer l'étendue de son vocabulaire actif"],
+      answer: 1,
+      explication: "Relire ses notes donne une impression de maîtrise parce que le texte est familier. La familiarité n'est pas de la compréhension. Solution : s'auto-interroger à livre fermé — même si les premières réponses sont fausses."
+    },
+    {
+      q: "Selon Roediger & Karpicke (2006), l'effet de test améliore la rétention à long terme de...",
+      options: ["10 à 20% par rapport à la relecture passive", "30 à 40% par rapport à la relecture passive", "50 à 80% par rapport à la relecture passive", "Plus de 100% par rapport à la relecture passive"],
+      answer: 2,
+      explication: "L'acte de chercher, tâtonner, se tromper et corriger ancre l'information plus profondément que toute relecture — même si les premières réponses sont incorrectes. Le ratage fait partie du processus."
+    },
+    {
+      q: "Quelle connexion essentielle unit l'éthos (S1) et le vocabulaire (S4) ?",
+      options: ["Ils concernent tous deux le choix du registre de langue approprié", "La précision lexicale est l'un des signaux les plus puissants de l'éthos perçu", "L'éthos s'apprend toujours avant le vocabulaire dans tout programme sérieux", "Ils sont indépendants dans les situations professionnelles réelles"],
+      answer: 1,
+      explication: "Utiliser le mot exact là où les autres disent 'intéressant' ou 'difficile' envoie un signal de compétence (phronèsis). Le vocabulaire précis est de l'éthos incarné — la crédibilité se construit aussi mot par mot."
+    }
+  ],
+  writingExercise: {
+    title: "Autoportrait rhétorique — bilan mi-parcours",
+    duration: "~25 min",
+    instruction: "Rédigez un autoportrait rhétorique de 300-400 mots en trois parties rigoureuses : (1) Ce que j'ai réellement intégré — citez 2-3 réflexes nouveaux concrets dans vos conversations ou écrits, avec un exemple précis pour chacun (pas 'je fais plus attention' — mais 'avant de répondre à l'objection de Marc en réunion, j'ai reformulé...') ; (2) Ce qui résiste encore — identifiez 2 compétences des 5 premières sessions non intégrées et expliquez pourquoi (concept flou ? manque d'occasions ? habitude trop ancrée ?) ; (3) Mon plan de correction — une action spécifique et mesurable pour les 7 prochains jours sur le point le plus faible.",
+    correctionCriteria: "Évalue mon autoportrait sur : (1) Honnêteté et précision de l'auto-diagnostic — les exemples sont-ils vraiment concrets et vérifiables ? (2) Profondeur de l'analyse des résistances — les causes identifiées sont-elles pertinentes ? (3) Réalisme et spécificité du plan d'action (4) Qualité de l'expression elle-même — est-ce que mon texte applique les principes de S4 et S7 ? Note /5 + signal sur l'écart entre ce que je pense maîtriser et ce que mon écriture révèle réellement."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -784,7 +940,33 @@ Les deux sont des outils — alterner selon l'effet voulu est une compétence st
     { q: "Qu'est-ce que la nominalisation excessive ? Donnez un exemple et sa correction.", a: "Remplacer les verbes par des noms d'action alourdissant la phrase. Ex : 'réalisation d'une prise en compte des besoins' → 'prendre en compte les besoins'. Les verbes d'action donnent du mouvement et réduisent la longueur." },
     { q: "Quelle est la différence entre parataxe et hypotaxe ? Donnez un exemple célèbre de chacun.", a: "Parataxe : juxtaposition sans lien. 'Veni, vidi, vici' (César). Hypotaxe : subordination avec liens explicites. Les phrases de Proust (parfois une page entière). Alterner selon l'effet voulu." },
     { q: "Quelle est la règle de Tchekhov appliquée à la phrase ?", a: "Chaque mot doit servir. Un mot qui peut être retiré sans perte de sens doit être retiré. Test : si je retire ce mot, le sens change-t-il ? Non → superflu." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "Qu'est-ce que la nominalisation excessive ?",
+      options: ["Utiliser trop de noms propres dans un texte formel", "Remplacer les verbes d'action par des noms d'action, alourdissant la phrase", "Répéter le même substantif sans utiliser de pronoms de substitution", "Abuser des termes techniques spécialisés du domaine"],
+      answer: 1,
+      explication: "'La réalisation d'une prise en compte des besoins' → 'Prendre en compte les besoins'. Les verbes donnent du mouvement. Neuf noms sans verbe d'action = phrase vide. Règle : favoriser le verbe à chaque occasion."
+    },
+    {
+      q: "La parataxe se caractérise par...",
+      options: ["Des phrases longues et syntaxiquement hiérarchisées", "L'utilisation intensive de figures de répétition", "La juxtaposition de propositions sans mots de liaison", "La subordination explicite des propositions secondaires"],
+      answer: 2,
+      explication: "'Il entre. Il regarde. Il repart.' (Hemingway). Effet : rapidité, brutalité, impact. À opposer à l'hypotaxe (Proust, Cicéron) qui hiérarchise les propositions par subordination explicite."
+    },
+    {
+      q: "La règle de Tchekhov appliquée à la phrase signifie...",
+      options: ["Commencer chaque phrase par le sujet, sans inversion", "Limiter les phrases à 20 mots pour garantir la clarté", "Tout mot qui peut être retiré sans perte de sens doit l'être", "Alterner systématiquement phrases courtes et longues"],
+      answer: 2,
+      explication: "Test : si je retire ce mot, le sens change-t-il ? Non → le mot est superflu. 'Il est absolument essentiel et fondamentalement important' → 'Il est essentiel'. La puissance augmente avec la concision."
+    }
+  ],
+  writingExercise: {
+    title: "Chirurgie de texte — réécriture complète",
+    duration: "~25 min",
+    instruction: "Prenez un texte professionnel récent que vous avez écrit (email, note, compte-rendu — 150-250 mots minimum). Travaillez en 4 étapes : (1) identifiez et annotez toutes les pathologies présentes (phrase-fleuve, nominalisation, conditionnel de précaution, échauffement/conclusion superflue) ; (2) réécrivez le texte en corrigeant chaque pathologie ; (3) vérifiez les 6 règles d'Orwell une par une ; (4) mesurez et commentez la réduction : combien de mots avant/après ? Quel est le ratio ? Présentez texte original (annoté) + texte corrigé + commentaire des 3 corrections les plus significatives.",
+    correctionCriteria: "Évalue ma réécriture sur : (1) Exhaustivité de l'identification des pathologies — en ai-je manqué ? (2) Efficacité des corrections — les problèmes sont-ils vraiment résolus ou déplacés ? (3) Qualité du texte final — rythme, clarté, impact (4) Ratio de réduction — est-il suffisant (objectif : -30% minimum) ? Note /5 + réécriture d'une phrase qui pourrait encore être améliorée dans ma version 'corrigée'."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -879,7 +1061,33 @@ Les deux sont des outils — alterner selon l'effet voulu est une compétence st
     { q: "Quelle est la différence entre tenir sa position et avoir raison ?", a: "Tenir sa position, c'est refuser que la pression (ton, volume, autorité, nombre) remplace l'argument — même en concédant sur des points secondaires. Avoir raison est une question de fond. On peut tenir sa position sur une thèse fausse. On peut céder sur une thèse juste. La posture est indépendante de la vérité." },
     { q: "Pourquoi une concession sur un point secondaire renforce-t-elle la crédibilité sur le point central ?", a: "Elle signale l'honnêteté intellectuelle — la capacité à reconnaître ce qui est juste, même chez l'adversaire. Elle rend le refus de concéder sur le point central plus crédible : 'Je concède quand c'est juste ; ici je ne cède pas parce que ce n'est pas juste.'" },
     { q: "Qu'est-ce que l'éristique ? En quoi diffère-t-elle de la dialectique ?", a: "L'éristique cherche la victoire conversationnelle, par tous moyens. La dialectique cherche la vérité par la contradiction constructive. Schopenhauer décrit l'éristique — Socrate pratiquait la dialectique (en théorie)." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "La pression par le tempo dans une joute verbale consiste à...",
+      options: ["Parler très lentement pour dominer l'espace conversationnel", "Enchaîner les arguments avant que l'interlocuteur ait traité le précédent", "Utiliser un vocabulaire technique pour désorienter l'adversaire", "Répéter la même affirmation jusqu'à la fatigue de l'interlocuteur"],
+      answer: 1,
+      explication: "On accumule les arguments trop vite pour que l'interlocuteur puisse les traiter un à un. Défense : ralentir délibérément son propre tempo, reformuler, refuser de suivre le rythme imposé."
+    },
+    {
+      q: "Concéder un point secondaire sous pression permet principalement de...",
+      options: ["Éviter le conflit en donnant satisfaction à l'adversaire", "Renforcer la crédibilité sur le point central par un signal d'honnêteté intellectuelle", "Affaiblir sa position en cédant du terrain à l'adversaire", "Changer de sujet sans paraître défensif ou en fuite"],
+      answer: 1,
+      explication: "'Je concède quand c'est juste ; ici je ne cède pas parce que ce n'est pas juste.' La concession ciblée signale l'honnêteté et rend le refus de concéder sur le point central plus crédible et plus fort."
+    },
+    {
+      q: "L'éristique selon Schopenhauer se distingue de la dialectique en ce qu'elle...",
+      options: ["Cherche la vérité par la contradiction méthodique", "Cherche la victoire conversationnelle par tous moyens, honnêtes ou non", "Vise la persuasion d'un auditoire impartial et raisonnable", "Repose exclusivement sur la logique formelle et les syllogismes"],
+      answer: 1,
+      explication: "L'éristique cherche la victoire — différente de la dialectique (vérité) et de la rhétorique (persuasion d'un auditoire). Savoir la reconnaître chez l'adversaire est une compétence défensive fondamentale."
+    }
+  ],
+  writingExercise: {
+    title: "Analyse et reconstruction d'une situation de pression",
+    duration: "~25 min",
+    instruction: "Décrivez en 300-400 mots une situation récente où vous avez subi une pression rhétorique réelle (réunion conflictuelle, critique directe, déstabilisation par le ton ou le volume, consensus contre vous). Structurez rigoureusement : (1) description précise du mécanisme de pression — identifiez-le parmi ceux de cette session et justifiez ; (2) analyse honnête de votre réaction réelle — avez-vous accéléré, reculé, perdu votre registre, cédé sur le fond ? ; (3) reconstruction de la scène : formulez exactement ce que vous diriez maintenant — les phrases précises, dans l'ordre chronologique de l'échange.",
+    correctionCriteria: "Évalue mon analyse sur : (1) Exactitude de l'identification du mécanisme de pression utilisé (2) Honnêteté et précision de l'auto-analyse — les preuves de déstabilisation sont-elles concrètes ? (3) Efficacité de la reconstruction — les réponses proposées neutralisent-elles vraiment la pression sans fuir ? (4) Naturel et fluidité des formulations proposées — peut-on les prononcer sans paraître robotique ? Note /5 + reformulation du moment le plus difficile de l'échange."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -991,7 +1199,33 @@ Les deux sont des outils — alterner selon l'effet voulu est une compétence st
     { q: "Quelles sont les 5 parties de la rhétorique selon Cicéron ?", a: "Inventio (trouver les idées), Dispositio (les organiser), Elocutio (les formuler), Memoria (les mémoriser), Actio (les délivrer). L'erreur fréquente : s'entraîner à l'Actio sans maîtriser la Dispositio." },
     { q: "Pourquoi ne pas dépasser 3 points dans un développement formel ?", a: "Au-delà de 3, la mémoire à court terme de l'auditoire sature (Miller, 1956 : 'The Magical Number Seven'). 3 points ancrés valent toujours mieux que 7 oubliés." },
     { q: "Qu'est-ce que la dispositio selon Cicéron, et quel est son principe d'ordre ?", a: "L'art d'organiser les arguments dans l'ordre rhétorique le plus efficace — pas l'ordre logique. Cicéron : commencer fort, placer le plus faible au milieu (l'auditoire retient moins), terminer fort (primauté de la fin)." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "Dans la structure en 5 temps, qu'est-ce qu'on formule en PREMIER avant de penser au contenu ?",
+      options: ["L'enjeu — pourquoi l'auditoire doit s'y intéresser", "L'accroche et la conclusion mémorable", "Les 3 titres du développement", "Les objections prévisibles et leurs réponses"],
+      answer: 1,
+      explication: "L'accroche capte l'attention, la conclusion crée la mémorisation. Ces deux éléments se formulent avant tout contenu. La conclusion ne s'improvise jamais — elle s'écrit en premier et guide tout le reste."
+    },
+    {
+      q: "Pourquoi limiter le développement à 3 points maximum ?",
+      options: ["Les discours longs perdent systématiquement leur impact rhétorique", "La mémoire à court terme de l'auditoire sature au-delà de 3 éléments distincts", "Les 3 piliers d'Aristote imposent naturellement cette structure", "L'auditoire perd l'attention au-delà de 20 minutes de présentation"],
+      answer: 1,
+      explication: "Miller (1956) : 'The Magical Number Seven, Plus or Minus Two' — la mémoire à court terme est structurellement limitée. 3 points ancrés valent toujours mieux que 7 oubliés. Chaque point suit la structure TII."
+    },
+    {
+      q: "La dispositio cicéronienne recommande quel ordre des arguments ?",
+      options: ["L'ordre chronologique naturel des faits", "Du plus faible au plus fort, pour monter en puissance", "Fort au début, plus faible au milieu, fort à la fin", "Du plus simple au plus complexe pour l'auditoire"],
+      answer: 2,
+      explication: "L'auditoire retient davantage le début et la fin (effets de primauté et de récence). L'argument le plus faible va au milieu — il est moins mémorisé. Ce n'est pas l'ordre logique : c'est l'ordre rhétorique."
+    }
+  ],
+  writingExercise: {
+    title: "Préparer une présentation complète en 5 temps",
+    duration: "~30 min",
+    instruction: "Préparez une présentation de 5 minutes sur un sujet que vous maîtrisez vraiment (votre métier, un projet, une conviction forte, une compétence). Rédigez les 5 éléments complets — pas des titres, les phrases exactes que vous prononceriez : (1) l'accroche complète (3 phrases maximum, une des 4 formes vues en cours) ; (2) l'enjeu formulé pour l'auditoire spécifique que vous désignez ; (3) les 3 points avec Thèse + Illustration + Implication pour chacun ; (4) l'objection la plus prévisible et votre réponse ; (5) la conclusion mémorable. Précisez en introduction à qui cette présentation s'adresse exactement.",
+    correctionCriteria: "Évalue ma présentation sur : (1) Efficacité de l'accroche — capte-t-elle l'attention en 30 secondes ? crée-t-elle une tension ou une question ? (2) Clarté de l'enjeu — l'auditoire comprend-il précisément pourquoi c'est important pour lui ? (3) Structure TII de chaque point — thèse claire, illustration concrète et mémorable, implication précise pour cet auditoire (4) Mémorabilité de la conclusion. Note /5 + reformulation de la conclusion si elle peut être plus frappante ou plus précise."
+  }
 },
 
 // ════════════════════════════════════════════════════════════
@@ -1080,11 +1314,43 @@ Les deux sont des outils — alterner selon l'effet voulu est une compétence st
       { titre: "Toastmasters International", auteur: "toastmasters.org", note: "Clubs de prise de parole dans toutes les grandes villes. Réunions hebdomadaires. L'environnement de pratique délibérée le plus structuré disponible en dehors d'une école." }
     ]
   },
+  exercise: {
+    title: "Synthèse personnelle — Mon pitch rhétorique",
+    duration: "~20 min",
+    instruction: "Exercice de bilan : choisissez un sujet que vous maîtrisez (votre métier, un projet, une conviction). Rédigez une prise de parole de 5 minutes en appliquant tout ce que vous avez appris dans ce programme. Utilisez la structure en 5 temps (S9), au moins une figure de style (S7), une reformulation anticipée des objections (S8), et un vocabulaire précis (S4). Puis copiez le prompt ci-dessous pour obtenir un retour de Claude sur votre synthèse.",
+    cases: []
+  },
   quiz: [
     { q: "Qu'est-ce que le 'transfert' en sciences de l'apprentissage, et pourquoi est-ce le niveau le plus difficile ?", a: "La capacité à utiliser une compétence dans un contexte différent de celui où elle a été acquise. Difficile parce que le cerveau encode les compétences de façon contextuelle — il faut un entraînement délibéré dans des contextes variés pour généraliser." },
     { q: "Qu'est-ce que 'vir bonus dicendi peritus' et qui l'a formulé ?", a: "Quintilien, Institution oratoire (~95 ap. J.-C.). 'Homme de bien habile à parler' — la définition de l'orateur parfait qui intègre l'exigence éthique à la compétence technique." },
     { q: "Quelle est la lacune la plus fréquente après un programme de rhétorique dense ?", a: "La précision du vocabulaire sous pression : en situation détendue le vocabulaire actif est disponible, mais sous stress on revient aux mots génériques. Solution : s'entraîner à la substitution à l'oral, pas seulement à l'écrit." }
-  ]
+  ],
+  quizMcq: [
+    {
+      q: "Le 'transfert' en sciences de l'apprentissage désigne...",
+      options: ["La transmission de connaissances d'un mentor à un apprenant", "L'utilisation d'une compétence dans un contexte différent de celui d'apprentissage", "Le passage du vocabulaire passif au vocabulaire actif par la pratique", "La mémorisation durable d'un concept abstrait à long terme"],
+      answer: 1,
+      explication: "'Savoir que l'éthos existe' ≠ 'calibrer instinctivement son éthos avant toute réunion'. Le transfert exige un entraînement délibéré dans des contextes variés — c'est le niveau d'apprentissage le plus difficile."
+    },
+    {
+      q: "Que signifie 'vir bonus dicendi peritus' selon Quintilien ?",
+      options: ["Un rhéteur maîtrisant les 5 parties de la rhétorique cicéronienne", "Un homme de bien habile à parler — l'éthique et la technique sont indissociables", "Un philosophe qui préfère la dialectique de la vérité à la persuasion", "Un orateur pratiquant l'elenchus socratique dans ses débats"],
+      answer: 1,
+      explication: "Quintilien : l'orateur parfait ne peut être qu'un homme de bien. La rhétorique sans éthique n'est pas de la rhétorique — c'est de la sophistique. La compétence technique et la vertu morale sont constitutives l'une de l'autre."
+    },
+    {
+      q: "Quelle lacune est la plus fréquente après un programme de rhétorique dense ?",
+      options: ["L'incapacité à identifier les sophismes dans des situations rapides", "La confusion entre éthos et pathos dans les discours complexes", "Le vocabulaire précis qui disparaît sous stress, remplacé par les mots génériques", "La difficulté à structurer une prise de parole formelle improvisée"],
+      answer: 2,
+      explication: "En situation détendue, le vocabulaire actif est disponible. Sous stress, le cerveau revient aux mots par défaut. Solution : s'entraîner à la substitution à l'oral dans des situations de faible enjeu d'abord."
+    }
+  ],
+  writingExercise: {
+    title: "Mon pitch rhétorique personnel — synthèse complète",
+    duration: "~30 min",
+    instruction: "Rédigez un texte de synthèse de 400-500 mots qui mobilise l'ensemble du programme. Choisissez un sujet que vous maîtrisez vraiment et précisez d'emblée à qui vous vous adressez et dans quel contexte ce texte serait prononcé. Le texte doit obligatoirement : (1) suivre la structure en 5 temps (S9) ; (2) intégrer au moins une figure de style nommée (S7) ; (3) anticiper et répondre à une objection réelle (S8) ; (4) utiliser un vocabulaire précis — bannissez 'intéressant', 'difficile', 'faire', 'chose', 'bien' (S4) ; (5) se terminer par une formule mémorable. Le tout sans que ces contraintes paraissent artificielles.",
+    correctionCriteria: "Évalue mon texte de synthèse sur l'ensemble des compétences : (1) Triangle rhétorique — éthos/pathos/logos bien dosés selon le contexte et l'auditoire déclaré ? (2) Solidité argumentative — prémisses vérifiables, pas de sophismes, pas de sauts logiques ? (3) Qualité lexicale — mots précis, registre adapté, vocabulaire actif perceptible ? (4) Structure en 5 temps — tous les éléments présents et efficaces, transitions fluides ? (5) Style — clarté, rythme, figure de style bien employée (pas plaquée) ? Note /5 sur chaque axe. Puis : la phrase la plus forte du texte + la phrase la plus faible réécrite en mieux."
+  }
 },
 
 ], // fin sessions
@@ -1302,11 +1568,11 @@ figures: [
     pieges: "Orwell a dénoncé systématiquement les euphémismes politiques comme instruments de dissimulation. Un euphémisme qui masque une réalité grave n'est pas de la politesse — c'est de la manipulation. Toujours se demander : est-ce que cet euphémisme protège l'interlocuteur ou dissimule quelque chose de dérangeant ?"
   },
   {
-    name: "Chiasme (inversé)",
+    name: "Renversement",
     icon: "↕️",
     category: "Structure",
-    etymologie: "Voir 'Chiasme'. Cette entrée couvre la variante sémantique — non plus syntaxique mais de sens.",
-    def: "Chiasme sémantique : inversion du rapport entre deux concepts, créant un renversement de perspective plutôt qu'une simple inversion de mots.",
+    etymologie: "Du latin reversare (retourner, inverser). Variante sémantique du chiasme : non plus une inversion de mots, mais une inversion du rapport entre deux concepts.",
+    def: "Inversion du rapport logique ou causal entre deux concepts, créant un renversement de perspective — plus profond qu'un simple jeu sur les mots.",
     effet: "Renversement de point de vue, révélation d'une vérité cachée dans l'inversion, sentiment de profondeur soudaine.",
     exemples: [
       { type: "Littéraire", texte: "\"On ne trouve pas le bonheur, on le crée.\" — l'inversion du rapport actif/passif change la philosophie sous-jacente." },
@@ -1344,7 +1610,7 @@ vocabulary: [
   { word: "Effet de test", def: "S'auto-interroger sans consulter ses notes améliore la rétention de 50-80% par rapport à la relecture passive. Roediger & Karpicke (2006).", example: "Fermer le cours, essayer de rappeler les 10 sophismes de mémoire, vérifier, recommencer. L'acte de chercher — même en se trompant — ancre l'information.", category: "Apprentissage", session: 6 },
   { word: "Parataxe", def: "Juxtaposition de propositions sans mots de liaison. Effet de rapidité, brutalité, impact maximal. Style de Hemingway et de César.", example: "Veni, vidi, vici (César). 'Il entre. Il regarde. Il repart.' La parataxe coupe, tranche, avance. Elle refuse l'explication — elle impose le constat.", category: "Style", session: 7 },
   { word: "Hypotaxe", def: "Subordination des propositions avec liens explicites causaux, concessifs, temporels. Permet la nuance, la hiérarchie des idées, la complexité.", example: "La phrase proustienne — parfois une page entière — qui subordonne tout à l'impression centrale. Permet de montrer comment les choses se causent et se nuancent.", category: "Style", session: 7 },
-  { word: "Nominalisaton", def: "Transformation d'un verbe ou adjectif en nom, alourdissant la phrase et masquant l'action. Pathologie fréquente du style administratif.", example: "'Procéder à la réalisation d'une évaluation' au lieu de 'évaluer'. 'Opérer un rapprochement' au lieu de 'rapprocher'. La nominalisation dilue l'action.", category: "Style", session: 7 },
+  { word: "Nominalisation", def: "Transformation d'un verbe ou adjectif en nom, alourdissant la phrase et masquant l'action. Pathologie fréquente du style administratif.", example: "'Procéder à la réalisation d'une évaluation' au lieu de 'évaluer'. 'Opérer un rapprochement' au lieu de 'rapprocher'. La nominalisation dilue l'action.", category: "Style", session: 7 },
   { word: "Éristique", def: "Art de disputer pour avoir raison — par des moyens honnêtes ou non (Schopenhauer, 1831). Cherche la victoire conversationnelle, pas la vérité.", example: "Un avocat qui sait qu'il a perdu mais continue à déstabiliser l'adversaire par des techniques rhétoriques fait de l'éristique. Outil défensif : savoir la reconnaître.", category: "Méthode", session: 8 },
   { word: "Dialectique", def: "Art de conduire un dialogue par confrontation d'arguments opposés pour en dégager une vérité. ≠ rhétorique (convaincre) ≠ éristique (gagner).", example: "Le dialogue socratique est de la dialectique : on cherche la vérité ensemble, pas à écraser l'adversaire. Hegel systématise : thèse → antithèse → synthèse.", category: "Méthode", session: 8 },
   { word: "Inventio", def: "Première des cinq parties de la rhétorique cicéronienne. L'art de trouver les idées, les arguments et les preuves pertinents à un sujet donné.", example: "Avant de préparer une présentation, l'inventio consiste à lister toutes les idées possibles, tous les angles, tous les arguments — avant de les trier (dispositio).", category: "Structure", session: 9 },
