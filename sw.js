@@ -2,7 +2,7 @@
 // FORGER SA PAROLE — Service Worker (offline support)
 // ============================================================
 
-const CACHE_NAME = 'fsp-v5';
+const CACHE_NAME = 'fsp-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -16,10 +16,18 @@ const ASSETS = [
   './icons/apple-touch-icon.png'
 ];
 
-// Install : cache all assets
+// Install : cache each asset individually so one 404 never aborts the whole install
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache =>
+      Promise.allSettled(
+        ASSETS.map(url =>
+          cache.add(url).catch(err => {
+            console.warn('SW: asset non mis en cache:', url, err);
+          })
+        )
+      )
+    )
   );
   self.skipWaiting();
 });
@@ -34,8 +42,9 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch : cache-first strategy
+// Fetch : cache-first, fallback réseau puis index.html
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;

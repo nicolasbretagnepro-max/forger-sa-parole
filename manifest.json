@@ -1,7 +1,7 @@
 {
   "name": "Forger sa Parole",
   "short_name": "Rhétorique",
-  "description": "Rhétorique, vocabulaire, argumentation — programme complet en 10 sessions",
+  "description": "Rhétorique, vocabulaire, argumentation — programme complet en 18 sessions",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#5856D6",
@@ -39,7 +39,7 @@
     {
       "name": "Sessions",
       "url": "./index.html#sessions",
-      "description": "Accéder aux 10 sessions du cours"
+      "description": "Accéder aux 18 sessions du cours"
     },
     {
       "name": "Vocabulaire",

@@ -2,8 +2,29 @@
 // FORGER SA PAROLE — Application v2
 // ============================================================
 
-// ── MCQ state (persists across tab switches) ─────────────────
-const SESSION_EXERCISE_STATE = {}; // { [sessionId]: { mcq: {[qi]: selectedOption}, recallTexts: {[qi]: text} } }
+// ── MCQ state (persiste entre onglets ET entre sessions/rechargements) ──
+// { [sessionId]: { mcq: {[qi]: selectedOption}, recallTexts: {[key]: text} } }
+const SESSION_EXERCISE_STATE = JSON.parse(localStorage.getItem('fsp_exstate') || '{}');
+function saveExerciseState() {
+  try { localStorage.setItem('fsp_exstate', JSON.stringify(SESSION_EXERCISE_STATE)); } catch (e) {}
+}
+
+// ── Pile d'overlays pour le bouton retour (Android) / swipe-back (iOS) ──
+const OVERLAY_STACK = []; // fonctions de fermeture réelles (DOM)
+function openOverlay(realCloseFn) {
+  OVERLAY_STACK.push(realCloseFn);
+  history.pushState({ ovl: OVERLAY_STACK.length }, '');
+}
+function closeOverlay() {
+  // Demande de fermeture : on revient dans l'historique, popstate exécute la vraie fermeture
+  if (OVERLAY_STACK.length) history.back();
+}
+window.addEventListener('popstate', () => {
+  if (OVERLAY_STACK.length) {
+    const fn = OVERLAY_STACK.pop();
+    if (fn) fn();
+  }
+});
 
 // ── Pillar definitions ────────────────────────────────────────
 const PILLARS = [
@@ -233,6 +254,7 @@ function openSession(sessionId) {
   STATE.readingProgress  = 0;
 
   const detail = document.getElementById('session-detail');
+  const wasOpen = detail.classList.contains('open');
   detail.classList.add('open');
 
   document.getElementById('detail-session-title').textContent = session.theme;
@@ -249,12 +271,17 @@ function openSession(sessionId) {
   renderDetailTab('cours');
   document.querySelector('.detail-body').scrollTop = 0;
   updateReadingProgress();
+  if (!wasOpen) openOverlay(_doCloseSession);
 }
 
-function closeSession() {
+function _doCloseSession() {
   document.getElementById('session-detail').classList.remove('open');
   if (STATE.currentScreen === 'sessions') renderSessions();
   if (STATE.currentScreen === 'home')     renderHome();
+}
+
+function closeSession() {
+  closeOverlay();
 }
 
 function switchDetailTab(tab) {
@@ -511,6 +538,7 @@ window.answerMcq = function(sessionId, questionIndex, selectedOption) {
   if (!SESSION_EXERCISE_STATE[sessionId]) SESSION_EXERCISE_STATE[sessionId] = {};
   if (!SESSION_EXERCISE_STATE[sessionId].mcq) SESSION_EXERCISE_STATE[sessionId].mcq = {};
   SESSION_EXERCISE_STATE[sessionId].mcq[questionIndex] = selectedOption;
+  saveExerciseState();
 
   const opts = card.querySelectorAll('.mcq-opt');
   opts.forEach((btn, i) => {
@@ -626,6 +654,7 @@ function saveRecallText(sessionId, key, text) {
   if (!SESSION_EXERCISE_STATE[sessionId]) SESSION_EXERCISE_STATE[sessionId] = {};
   if (!SESSION_EXERCISE_STATE[sessionId].recallTexts) SESSION_EXERCISE_STATE[sessionId].recallTexts = {};
   SESSION_EXERCISE_STATE[sessionId].recallTexts[key] = text;
+  saveExerciseState();
 }
 
 function showToast(msg) {
@@ -796,9 +825,11 @@ function openVocabModal(v) {
     setTimeout(() => { closeVocabModal(); renderVocab(); }, 700);
   };
   document.getElementById('vocab-modal').classList.add('open');
+  openOverlay(_doCloseVocabModal);
 }
 
-function closeVocabModal() { document.getElementById('vocab-modal').classList.remove('open'); }
+function _doCloseVocabModal() { document.getElementById('vocab-modal').classList.remove('open'); }
+function closeVocabModal() { closeOverlay(); }
 
 // ── FIGURES ──────────────────────────────────────────────────
 function renderFigures() {
@@ -848,41 +879,50 @@ function openFigureModal(fig, color) {
   if (sheet) sheet.scrollTop = 0;
 
   document.getElementById('figure-modal').classList.add('open');
+  openOverlay(_doCloseFigureModal);
 }
 
-function closeFigureModal() {
+function _doCloseFigureModal() {
   document.getElementById('figure-modal').classList.remove('open');
 }
+function closeFigureModal() { closeOverlay(); }
 
-// ── QUIZ / BASELINE ───────────────────────────────────────────
+// ── QUIZ / BASELINE (auto-évaluation structurée) ──────────────
+function getDiagState() {
+  return JSON.parse(localStorage.getItem('fsp_diag') || '{"checks":{},"texts":{}}');
+}
+function saveDiagState(d) {
+  try { localStorage.setItem('fsp_diag', JSON.stringify(d)); } catch (e) {}
+}
+function computeDiagScore(d) {
+  let total = 0;
+  CONTENT.baseline.forEach(q => {
+    const n = (q.criteria || []).length || 1;
+    const checks = (d.checks && d.checks[q.id]) || [];
+    const got = checks.filter(Boolean).length;
+    total += q.points * (got / n);
+  });
+  return Math.round(total);
+}
+function diagEngaged(d) {
+  // Au moins un critère coché quelque part
+  return Object.values(d.checks || {}).some(arr => (arr || []).some(Boolean));
+}
+
 function renderQuiz() {
   const container = document.getElementById('quiz-questions');
   container.innerHTML = '';
-  const saved = STATE.baselineTotal;
+  const diag = getDiagState();
 
-  // Score banner if already done
-  if (saved > 0) {
-    const sd = CONTENT.baselineScore.find(s => saved >= s.min && saved <= s.max);
-    container.innerHTML += `
-      <div class="score-banner" style="background:linear-gradient(135deg,${sd.color}cc,${sd.color}88)">
-        <div class="score-value">${saved}<span class="score-max">/100</span></div>
-        <div class="score-label">${sd.label}</div>
-        <div class="score-desc">${sd.desc}</div>
-      </div>`;
-  }
+  // Bandeau de score (calculé)
+  container.innerHTML += `<div id="diag-banner"></div>`;
 
-  // Score input
+  // Intro
   container.innerHTML += `
     <div class="card" style="padding:16px;margin-bottom:12px;">
-      <div style="font-size:16px;font-weight:700;margin-bottom:6px;">📊 Mon score de diagnostic</div>
-      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;">Réponds aux questions, révèle les réponses idéales, estime ton score et enregistre-le.</div>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <input type="number" id="score-input" min="0" max="100" placeholder="0 – 100"
-          style="flex:1;padding:11px 14px;background:var(--surface2);border:none;border-radius:10px;font-size:16px;color:var(--text-primary);font-family:var(--font);outline:none;">
-        <button onclick="submitScore()"
-          style="background:var(--accent);color:white;border:none;border-radius:10px;padding:11px 18px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;">
-          Enregistrer
-        </button>
+      <div style="font-size:16px;font-weight:700;margin-bottom:6px;">📊 Auto-évaluation diagnostique</div>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.5;">
+        Pour chaque question : rédige ta réponse, révèle la réponse idéale, puis coche honnêtement les critères que ta réponse remplissait. Le score sur 100 se calcule tout seul.
       </div>
     </div>`;
 
@@ -890,6 +930,9 @@ function renderQuiz() {
   const wrap = document.createElement('div');
   wrap.className = 'quiz-screen-card';
   CONTENT.baseline.forEach(bq => {
+    const crit = bq.criteria || [];
+    const checks = (diag.checks && diag.checks[bq.id]) || [];
+    const savedText = (diag.texts && diag.texts[bq.id]) || '';
     const div = document.createElement('div');
     div.className = 'baseline-question';
     div.innerHTML = `
@@ -898,13 +941,56 @@ function renderQuiz() {
         <span class="bq-points">${bq.points} pts</span>
       </div>
       <div class="bq-q">${bq.q}</div>
-      <div class="bq-criteria">${(bq.criteria || []).map(c => `<span class="bq-criterion">${c}</span>`).join('')}</div>
+      <textarea class="recall-textarea" rows="3" placeholder="Rédige ta réponse avant de révéler la correction…"
+        oninput="saveDiagText(${bq.id}, this.value)">${savedText}</textarea>
       <button class="bq-show-btn" onclick="revealBaselineAnswer(this)">Voir la réponse idéale</button>
       <div class="bq-ideal">${bq.ideal}</div>
+      <div class="bq-checklist-label">Coche les critères que ta réponse remplissait :</div>
+      <div class="bq-checklist">
+        ${crit.map((c, ci) => `
+          <label class="bq-check ${checks[ci] ? 'checked' : ''}" id="bq-check-${bq.id}-${ci}">
+            <input type="checkbox" ${checks[ci] ? 'checked' : ''}
+              onchange="toggleDiagCriterion(${bq.id}, ${ci}, this.checked)">
+            <span class="bq-check-box">✓</span>
+            <span class="bq-check-text">${c}</span>
+          </label>`).join('')}
+      </div>
+      <div class="bq-qscore" id="bq-qscore-${bq.id}">${qScoreLabel(bq, checks)}</div>
     `;
     wrap.appendChild(div);
   });
   container.appendChild(wrap);
+
+  renderDiagBanner(diag);
+}
+
+function qScoreLabel(bq, checks) {
+  const n = (bq.criteria || []).length || 1;
+  const got = (checks || []).filter(Boolean).length;
+  const pts = Math.round(bq.points * (got / n));
+  return `${pts} / ${bq.points} pts · ${got}/${n} critères`;
+}
+
+function renderDiagBanner(diag) {
+  const banner = document.getElementById('diag-banner');
+  if (!banner) return;
+  if (!diagEngaged(diag)) {
+    banner.innerHTML = `
+      <div class="score-banner" style="background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%)">
+        <div class="score-value">—<span class="score-max">/100</span></div>
+        <div class="score-label">Diagnostic non commencé</div>
+        <div class="score-desc">Coche les critères pour calculer ton score.</div>
+      </div>`;
+    return;
+  }
+  const score = computeDiagScore(diag);
+  const sd = CONTENT.baselineScore.find(s => score >= s.min && score <= s.max) || CONTENT.baselineScore[0];
+  banner.innerHTML = `
+    <div class="score-banner" style="background:linear-gradient(135deg,${sd.color}cc,${sd.color}88)">
+      <div class="score-value">${score}<span class="score-max">/100</span></div>
+      <div class="score-label">${sd.label}</div>
+      <div class="score-desc">${sd.desc}</div>
+    </div>`;
 }
 
 function revealBaselineAnswer(btn) {
@@ -913,17 +999,41 @@ function revealBaselineAnswer(btn) {
   btn.textContent = ideal.classList.contains('visible') ? 'Masquer' : 'Voir la réponse idéale';
 }
 
-function submitScore() {
-  const val = parseInt(document.getElementById('score-input').value);
-  if (isNaN(val) || val < 0 || val > 100) { showToast('Entre un score entre 0 et 100.'); return; }
-  saveBaseline(val);
-  renderQuiz();
-  showToast('Score enregistré !');
-}
+window.saveDiagText = function(qid, text) {
+  const d = getDiagState();
+  if (!d.texts) d.texts = {};
+  d.texts[qid] = text;
+  saveDiagState(d);
+};
+
+window.toggleDiagCriterion = function(qid, ci, checked) {
+  const bq = CONTENT.baseline.find(q => q.id === qid);
+  if (!bq) return;
+  const d = getDiagState();
+  if (!d.checks) d.checks = {};
+  if (!d.checks[qid]) d.checks[qid] = new Array((bq.criteria || []).length).fill(false);
+  d.checks[qid][ci] = checked;
+  saveDiagState(d);
+
+  // Score global → stat d'accueil
+  const score = computeDiagScore(d);
+  saveBaseline(score);
+
+  // MAJ ciblée (sans re-render complet : on garde focus/scroll)
+  const label = document.getElementById(`bq-check-${qid}-${ci}`);
+  if (label) label.classList.toggle('checked', checked);
+  const qScoreEl = document.getElementById(`bq-qscore-${qid}`);
+  if (qScoreEl) qScoreEl.textContent = qScoreLabel(bq, d.checks[qid]);
+  renderDiagBanner(d);
+};
 
 function resetAllProgress() {
-  if (!confirm('Réinitialiser toute la progression ? Sessions, mots mémorisés, streak et score seront effacés.')) return;
-  ['fsp_progress', 'fsp_streak', 'fsp_baseline', 'fsp_words', 'fsp_log'].forEach(k => localStorage.removeItem(k));
+  if (!confirm('Réinitialiser toute la progression ? Sessions, mots mémorisés, streak, score et réponses d\'exercices seront effacés.')) return;
+  ['fsp_progress', 'fsp_streak', 'fsp_baseline', 'fsp_words', 'fsp_log', 'fsp_exstate', 'fsp_diag'].forEach(k => localStorage.removeItem(k));
+  // Brouillons d'écriture (fsp_we_*)
+  Object.keys(localStorage).filter(k => k.startsWith('fsp_we_')).forEach(k => localStorage.removeItem(k));
+  // Vider l'état d'exercices en mémoire
+  Object.keys(SESSION_EXERCISE_STATE).forEach(k => delete SESSION_EXERCISE_STATE[k]);
   renderQuiz();
   renderHome();
   showToast('Progression réinitialisée.');
@@ -1066,4 +1176,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial
   renderHome();
   navigate('home');
+
+  // Raccourcis PWA (#sessions, #vocab, …) au lancement
+  const hash = (location.hash || '').replace('#', '');
+  if (['home', 'sessions', 'vocab', 'figures', 'quiz'].includes(hash)) {
+    navigate(hash);
+  }
 });

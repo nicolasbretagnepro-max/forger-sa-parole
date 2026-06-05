@@ -237,6 +237,9 @@ body {
   font-size: 20px;
   font-weight: 700;
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-label {
@@ -574,6 +577,28 @@ body {
   line-height: 1.6;
 }
 .course-content strong { color: var(--text-primary); }
+
+/* Tables du cours — bordures adaptées au thème + scroll horizontal mobile.
+   Les styles inline du contenu sont neutralisés ici via !important. */
+.course-content table {
+  width: 100% !important;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0 !important;
+  font-size: 14px;
+}
+.course-content th,
+.course-content td {
+  border-bottom-color: var(--border) !important;
+  color: var(--text-primary);
+  vertical-align: top;
+}
+.course-content th {
+  background: rgba(88,86,214,0.10) !important;
+  font-weight: 600;
+}
 
 /* Anchor + Action cards */
 .anchor-card {
@@ -1092,6 +1117,59 @@ body {
   line-height: 1.55;
 }
 .bq-ideal.visible { display: block; }
+
+/* Diagnostic — checklist d'auto-évaluation */
+.baseline-question .recall-textarea { margin-bottom: 12px; }
+.bq-checklist-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 14px 0 8px;
+}
+.bq-checklist { display: flex; flex-direction: column; gap: 8px; }
+.bq-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  background: var(--surface2);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.bq-check input { position: absolute; opacity: 0; pointer-events: none; }
+.bq-check-box {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: transparent;
+  transition: all 0.15s;
+}
+.bq-check-text { font-size: 14px; color: var(--text-primary); line-height: 1.35; }
+.bq-check.checked {
+  background: rgba(52,199,89,0.10);
+  border-color: rgba(52,199,89,0.35);
+}
+.bq-check.checked .bq-check-box {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: white;
+}
+.bq-qscore {
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: right;
+}
 
 /* Score banner */
 .score-banner {
