@@ -36,7 +36,7 @@ sessions: [
 <li><strong>L'eunoia</strong> — la bienveillance. L'orateur semble-t-il parler dans l'intérêt de son auditoire ?</li>
 </ul>
 
-<p>Ces trois éléments se construisent bien avant de parler — par la réputation, le parcours, les recommandations. Mais ils se jouent aussi à chaque phrase. Un vocabulaire précis, une capacité à anticiper les objections, une posture assurée sans arrogance : autant de signaux d'éthos que l'auditoire decode en temps réel, souvent sans en être conscient.</p>
+<p>Ces trois éléments se construisent bien avant de parler — par la réputation, le parcours, les recommandations. Mais ils se jouent aussi à chaque phrase. Un vocabulaire précis, une capacité à anticiper les objections, une posture assurée sans arrogance : autant de signaux d'éthos que l'auditoire décode en temps réel, souvent sans en être conscient.</p>
 
 <p><strong>L'éthos en situation professionnelle.</strong> En réunion, votre éthos se construit dans les 90 premières secondes. Comment vous entrez dans la salle. Si vous avez préparé ou si vous improvisez visiblement. Si vous citez des données ou des impressions. La précision du mot que vous choisissez. Tout cela est lu — même par des interlocuteurs qui ne savent pas lire l'éthos de façon formelle. Ils le sentent.</p>
 
@@ -95,7 +95,7 @@ sessions: [
 <p><strong>Vouloir "juste donner des informations".</strong> Il n'y a pas de discours neutre. Choisir quels faits présenter, dans quel ordre, avec quels mots : c'est déjà du logos, de l'éthos et du pathos. La prétendue neutralité est un choix rhétorique comme un autre — souvent le moins efficace.</p>
 
 <h3>Mot du jour — Enthymème</h3>
-<p>Du grec <em>enthumema</em> (ce qu'on garde dans l'esprit). Syllogisme rhétorique dont une prémisse est sous-entendue car partagée par l'auditoire. L'enthymème est plus efficace que le syllogisme complet : il rend l'auditoire acteur du raisonnement. "Cette marque est portée par des champions" (sous-entendu : acheter cette marque, c'est être un champion). Publius, Aristote, Livre II, ch. 22.</p>
+<p>Du grec <em>enthumema</em> (ce qu'on garde dans l'esprit). Syllogisme rhétorique dont une prémisse est sous-entendue car partagée par l'auditoire. L'enthymème est plus efficace que le syllogisme complet : il rend l'auditoire acteur du raisonnement. "Cette marque est portée par des champions" (sous-entendu : acheter cette marque, c'est être un champion). Aristote, Rhétorique, Livre II, ch. 22.</p>
 `,
   anchor: "Identifie un moment de la semaine où tu as dû convaincre quelqu'un. Quel pilier as-tu mobilisé en premier — éthos, pathos ou logos ? En était-il bien choisi au vu du contexte ?",
   action: "Avant ta prochaine prise de parole importante, pose-toi ces 3 questions : Quelle est ma crédibilité perçue sur ce sujet ? Dans quel état émotionnel est mon interlocuteur ? Quel est mon argument central — en une phrase ?",
