@@ -2,7 +2,7 @@
 // FORGER SA PAROLE — Service Worker (offline support)
 // ============================================================
 
-const CACHE_NAME = 'fsp-v6';
+const CACHE_NAME = 'fsp-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -11,9 +11,9 @@ const ASSETS = [
   './content.js',
   './manifest.json',
   './icon.svg',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/apple-touch-icon.png'
+  './icon-192.png',
+  './icon-512.png',
+  './apple-touch-icon.png'
 ];
 
 // Install : cache each asset individually so one 404 never aborts the whole install

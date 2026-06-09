@@ -2,11 +2,39 @@
 // FORGER SA PAROLE — Application v2
 // ============================================================
 
+function readJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (e) {
+    try { localStorage.removeItem(key); } catch (err) {}
+    return fallback;
+  }
+}
+
+function writeJSON(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+}
+
+function readString(key, fallback = '') {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function writeString(key, value) {
+  try { localStorage.setItem(key, value); } catch (e) {}
+}
+
 // ── MCQ state (persiste entre onglets ET entre sessions/rechargements) ──
 // { [sessionId]: { mcq: {[qi]: selectedOption}, recallTexts: {[key]: text} } }
-const SESSION_EXERCISE_STATE = JSON.parse(localStorage.getItem('fsp_exstate') || '{}');
+const SESSION_EXERCISE_STATE = readJSON('fsp_exstate', {});
 function saveExerciseState() {
-  try { localStorage.setItem('fsp_exstate', JSON.stringify(SESSION_EXERCISE_STATE)); } catch (e) {}
+  writeJSON('fsp_exstate', SESSION_EXERCISE_STATE);
 }
 
 // ── Pile d'overlays pour le bouton retour (Android) / swipe-back (iOS) ──
@@ -45,25 +73,25 @@ const STATE = {
   flashcardFlipped: false,
   readingProgress: 0,
 
-  get progress()      { return JSON.parse(localStorage.getItem('fsp_progress') || '{}'); },
-  get streak()        { return JSON.parse(localStorage.getItem('fsp_streak')   || '{"count":0,"best":0,"lastDate":null}'); },
-  get baselineTotal() { return parseInt(localStorage.getItem('fsp_baseline')   || '0'); },
-  get wordsLearned()  { return JSON.parse(localStorage.getItem('fsp_words')    || '[]'); },
-  get sessionLog()    { return JSON.parse(localStorage.getItem('fsp_log')      || '[]'); },
+  get progress()      { return readJSON('fsp_progress', {}); },
+  get streak()        { return readJSON('fsp_streak', { count: 0, best: 0, lastDate: null }); },
+  get baselineTotal() { return parseInt(readString('fsp_baseline', '0'), 10) || 0; },
+  get wordsLearned()  { return readJSON('fsp_words', []); },
+  get sessionLog()    { return readJSON('fsp_log', []); },
 };
 
 // ── Persistence ──────────────────────────────────────────────
 function saveProgress(sessionId, done) {
   const p = STATE.progress;
   p[sessionId] = done;
-  localStorage.setItem('fsp_progress', JSON.stringify(p));
+  writeJSON('fsp_progress', p);
   if (done) appendLog(sessionId);
 }
 
 function appendLog(sessionId) {
   const log = STATE.sessionLog;
   log.push({ id: sessionId, date: new Date().toISOString() });
-  localStorage.setItem('fsp_log', JSON.stringify(log));
+  writeJSON('fsp_log', log);
 }
 
 function updateStreak() {
@@ -76,7 +104,7 @@ function updateStreak() {
   s.count = s.lastDate === yesterday ? s.count + 1 : 1;
   s.best  = Math.max(s.best, s.count);
   s.lastDate = today;
-  localStorage.setItem('fsp_streak', JSON.stringify(s));
+  writeJSON('fsp_streak', s);
   // Message de compassion si streak perdu
   if (broken) {
     setTimeout(() => showToast(`Streak de ${wasStreak} jours interrompu — mais tu reviens 💪`), 500);
@@ -89,14 +117,14 @@ function updateStreak() {
 }
 
 function saveBaseline(total) {
-  localStorage.setItem('fsp_baseline', total.toString());
+  writeString('fsp_baseline', total.toString());
 }
 
 function markWordLearned(word) {
   const w = STATE.wordsLearned;
   if (!w.includes(word)) {
     w.push(word);
-    localStorage.setItem('fsp_words', JSON.stringify(w));
+    writeJSON('fsp_words', w);
     // Mise à jour de la stat "Mots" sur l'accueil si visible
     const statWords = document.getElementById('stat-words');
     if (statWords) statWords.textContent = w.length;
@@ -451,7 +479,7 @@ function renderDetailTab(tab) {
     // ── Exercice d'écriture avec Claude ──
     if (session.writingExercise) {
       const we = session.writingExercise;
-      const savedDraft = localStorage.getItem(`fsp_we_${sid}`) || '';
+      const savedDraft = readString(`fsp_we_${sid}`);
       html += `<div class="section-label-sm" style="margin-top:16px;">✍️ Exercice d'écriture</div>`;
       html += `<div class="writing-exercise-card">
         <div class="we-header">
@@ -556,30 +584,8 @@ window.answerMcq = function(sessionId, questionIndex, selectedOption) {
   const allCards = block.querySelectorAll('.mcq-card');
   const answered = block.querySelectorAll('.mcq-card[data-answered]');
   if (answered.length === allCards.length) {
-    // Calculer le score
-    let correct = 0;
-    session.quizMcq.forEach((mq, qi) => {
-      const c = document.getElementById(`mcq-${sessionId}-${qi}`);
-      if (!c) return;
-      const sel = parseInt(c.dataset.answered === '1' ? c.querySelector('.mcq-opt-correct, .mcq-opt-wrong') && (() => {
-        const opts2 = c.querySelectorAll('.mcq-opt');
-        let sel2 = -1;
-        opts2.forEach((b, i) => { if (b.classList.contains('mcq-opt-correct') || (b.classList.contains('mcq-opt-wrong'))) sel2 = i; });
-        return sel2;
-      })() : -1, 10);
-      // Vérifier si la réponse était correcte (option correcte a la classe mcq-opt-correct et n'est pas wronge)
-      const correctBtn = c.querySelector('.mcq-opt-correct');
-      const wrongBtn = c.querySelector('.mcq-opt-wrong');
-      if (correctBtn && !wrongBtn) correct++;
-      // ou si l'utilisateur a sélectionné la bonne réponse (pas de wrong)
-    });
-
-    // Calcul simplifié : compter les cartes sans mcq-opt-wrong
-    correct = 0;
-    session.quizMcq.forEach((mq, qi) => {
-      const c = document.getElementById(`mcq-${sessionId}-${qi}`);
-      if (c && !c.querySelector('.mcq-opt-wrong')) correct++;
-    });
+    const answers = SESSION_EXERCISE_STATE[sessionId]?.mcq || {};
+    const correct = session.quizMcq.filter((mq, qi) => answers[qi] === mq.answer).length;
 
     const scoreEl = document.getElementById(`mcq-score-${sessionId}`);
     if (scoreEl) {
@@ -639,7 +645,7 @@ Ne jamais donner de feedback vague ("c'est bien écrit"). Toujours citer le mot 
 
 // ── Sauvegarde automatique exercice d'écriture ───────────────
 function saveWeDraft(sessionId, text) {
-  localStorage.setItem(`fsp_we_${sessionId}`, text);
+  writeString(`fsp_we_${sessionId}`, text);
   // Afficher badge "Sauvegardé" fugacement
   const badge = document.getElementById(`we-saved-${sessionId}`);
   if (badge) {
@@ -732,6 +738,8 @@ function renderVocab() {
   if (filtered.length > 0) {
     STATE.flashcardIndex = STATE.flashcardIndex % filtered.length;
     renderVocabFlashcard(filtered);
+  } else {
+    renderEmptyVocabFlashcard();
   }
 
   // Counter
@@ -763,7 +771,7 @@ function renderVocab() {
 
 function renderVocabFlashcard(filtered) {
   STATE.flashcardFlipped = false;
-  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('flashcard').classList.remove('flipped', 'empty');
   const fc = filtered[STATE.flashcardIndex];
   document.getElementById('fc-category').textContent      = fc.category;
   document.getElementById('fc-word').textContent          = fc.word;
@@ -773,9 +781,28 @@ function renderVocabFlashcard(filtered) {
   document.getElementById('fc-example').textContent       = fc.example;
   // Counter — uses the same filtered list passed as parameter (inclut la recherche textuelle)
   document.getElementById('fc-counter').textContent = `${STATE.flashcardIndex + 1} / ${filtered.length}`;
+  document.getElementById('fc-prev').disabled = false;
+  document.getElementById('fc-next').disabled = false;
+}
+
+function renderEmptyVocabFlashcard() {
+  STATE.flashcardFlipped = false;
+  const flashcard = document.getElementById('flashcard');
+  flashcard.classList.remove('flipped');
+  flashcard.classList.add('empty');
+  document.getElementById('fc-category').textContent      = 'Recherche';
+  document.getElementById('fc-word').textContent          = 'Aucun mot';
+  document.getElementById('fc-session').textContent       = '';
+  document.getElementById('fc-back-category').textContent = 'Recherche';
+  document.getElementById('fc-def').textContent           = 'Aucun mot ne correspond au filtre actuel.';
+  document.getElementById('fc-example').textContent       = 'Modifie la recherche ou choisis une autre categorie.';
+  document.getElementById('fc-counter').textContent       = '0 / 0';
+  document.getElementById('fc-prev').disabled = true;
+  document.getElementById('fc-next').disabled = true;
 }
 
 function flipFlashcard() {
+  if (document.getElementById('flashcard')?.classList.contains('empty')) return;
   STATE.flashcardFlipped = !STATE.flashcardFlipped;
   document.getElementById('flashcard').classList.toggle('flipped', STATE.flashcardFlipped);
   // La mémorisation est volontaire uniquement via le bouton du modal — pas automatique au flip
@@ -889,10 +916,10 @@ function closeFigureModal() { closeOverlay(); }
 
 // ── QUIZ / BASELINE (auto-évaluation structurée) ──────────────
 function getDiagState() {
-  return JSON.parse(localStorage.getItem('fsp_diag') || '{"checks":{},"texts":{}}');
+  return readJSON('fsp_diag', { checks: {}, texts: {} });
 }
 function saveDiagState(d) {
-  try { localStorage.setItem('fsp_diag', JSON.stringify(d)); } catch (e) {}
+  writeJSON('fsp_diag', d);
 }
 function computeDiagScore(d) {
   let total = 0;
@@ -1029,9 +1056,11 @@ window.toggleDiagCriterion = function(qid, ci, checked) {
 
 function resetAllProgress() {
   if (!confirm('Réinitialiser toute la progression ? Sessions, mots mémorisés, streak, score et réponses d\'exercices seront effacés.')) return;
-  ['fsp_progress', 'fsp_streak', 'fsp_baseline', 'fsp_words', 'fsp_log', 'fsp_exstate', 'fsp_diag'].forEach(k => localStorage.removeItem(k));
-  // Brouillons d'écriture (fsp_we_*)
-  Object.keys(localStorage).filter(k => k.startsWith('fsp_we_')).forEach(k => localStorage.removeItem(k));
+  try {
+    ['fsp_progress', 'fsp_streak', 'fsp_baseline', 'fsp_words', 'fsp_log', 'fsp_exstate', 'fsp_diag'].forEach(k => localStorage.removeItem(k));
+    // Brouillons d'écriture (fsp_we_*)
+    Object.keys(localStorage).filter(k => k.startsWith('fsp_we_')).forEach(k => localStorage.removeItem(k));
+  } catch (e) {}
   // Vider l'état d'exercices en mémoire
   Object.keys(SESSION_EXERCISE_STATE).forEach(k => delete SESSION_EXERCISE_STATE[k]);
   renderQuiz();
@@ -1055,17 +1084,28 @@ function startQuickReview() {
 function openQuickReviewModal(words) {
   let idx = 0;
   let flipped = false;
+  let closed = false;
 
   const overlay = document.createElement('div');
   overlay.id = 'quick-review-overlay';
   overlay.className = 'qr-overlay';
+
+  function cleanup() {
+    if (closed) return;
+    closed = true;
+    overlay.remove();
+    delete window.toggleQrFlip;
+    delete window.qrNext;
+    delete window.qrMarkAndNext;
+    delete window.qrClose;
+  }
 
   function render() {
     const w = words[idx];
     overlay.innerHTML = `
       <div class="qr-sheet">
         <div class="qr-header">
-          <div class="qr-close" onclick="document.getElementById('quick-review-overlay').remove()">✕</div>
+          <button class="qr-close" type="button" onclick="qrClose()" aria-label="Fermer">✕</button>
           <div class="qr-title">Révision rapide</div>
           <div class="qr-progress">${idx + 1} / ${words.length}</div>
         </div>
@@ -1097,19 +1137,22 @@ function openQuickReviewModal(words) {
 
   window.qrNext = () => {
     idx++;
-    if (idx >= words.length) { overlay.remove(); showToast('Révision terminée ! 💪'); return; }
+    if (idx >= words.length) { closeOverlay(); showToast('Révision terminée ! 💪'); return; }
     render();
   };
 
   window.qrMarkAndNext = (word) => {
     markWordLearned(word);
     idx++;
-    if (idx >= words.length) { overlay.remove(); showToast('Révision terminée — mots mémorisés ! 🎓'); renderVocab(); return; }
+    if (idx >= words.length) { closeOverlay(); showToast('Révision terminée — mots mémorisés ! 🎓'); renderVocab(); return; }
     render();
   };
 
+  window.qrClose = () => closeOverlay();
+
   render();
   document.body.appendChild(overlay);
+  openOverlay(cleanup);
 }
 
 // ── Lien externe (iOS PWA safe) ───────────────────────────────
