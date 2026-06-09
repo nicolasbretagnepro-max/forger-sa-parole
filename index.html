@@ -3,13 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#5856D6">
+  <meta name="theme-color" content="#5856D6" id="theme-color-meta">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Rhétorique">
   <meta name="description" content="Forger sa Parole — Rhétorique, vocabulaire, argumentation en 18 sessions">
 
   <title>Forger sa Parole</title>
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('fsp_theme');
+        if (theme === 'dark' || theme === 'light') {
+          document.documentElement.dataset.theme = theme;
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -30,8 +40,13 @@
   <div id="home-screen" class="screen">
 
     <div class="home-hero">
-      <div class="home-hero-greeting">Bonjour Nicolas 👋</div>
-      <div class="home-hero-title">Forger sa Parole</div>
+      <div class="home-hero-top">
+        <div>
+          <div class="home-hero-greeting">Bonjour Nicolas 👋</div>
+          <div class="home-hero-title">Forger sa Parole</div>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Changer de thème">☾</button>
+      </div>
       <div class="stats-row">
         <div class="stat-chip">
           <div class="stat-value" id="stat-sessions">0</div>
@@ -110,8 +125,8 @@
       </div>
       <div class="quick-action" onclick="navigate('quiz')">
         <div class="quick-action-icon">📊</div>
-        <div class="quick-action-label">Diagnostic</div>
-        <div class="quick-action-desc">Test de niveau initial</div>
+        <div class="quick-action-label">Bilan initial</div>
+        <div class="quick-action-desc">Situer ton niveau actuel</div>
       </div>
       <div class="quick-action" onclick="navigate('sessions')">
         <div class="quick-action-icon">📚</div>
@@ -191,8 +206,8 @@
   <!-- ══ QUIZ / BASELINE SCREEN ═══════════════════════════ -->
   <div id="quiz-screen" class="screen">
     <div class="page-header">
-      <div class="page-title">Diagnostic</div>
-      <div class="page-subtitle">Test de niveau initial — 100 points</div>
+      <div class="page-title">Bilan initial</div>
+      <div class="page-subtitle">10 questions guidées — score sur 100</div>
     </div>
     <div id="quiz-questions"></div>
     <div class="reset-zone">
@@ -221,7 +236,7 @@
     </div>
     <div class="nav-item" data-screen="quiz">
       <div class="nav-icon">📊</div>
-      <div class="nav-label">Diagnostic</div>
+      <div class="nav-label">Bilan</div>
     </div>
   </nav>
 

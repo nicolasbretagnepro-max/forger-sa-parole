@@ -71,6 +71,7 @@ const STATE = {
   currentVocabFilter: 'Tous',
   flashcardIndex: 0,
   flashcardFlipped: false,
+  diagQuestionIndex: 0,
   readingProgress: 0,
 
   get progress()      { return readJSON('fsp_progress', {}); },
@@ -79,6 +80,36 @@ const STATE = {
   get wordsLearned()  { return readJSON('fsp_words', []); },
   get sessionLog()    { return readJSON('fsp_log', []); },
 };
+
+// ── Theme ─────────────────────────────────────────────────
+function getPreferredTheme() {
+  const saved = readString('fsp_theme', '');
+  if (saved === 'dark' || saved === 'light') return saved;
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme(theme) {
+  const nextTheme = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = nextTheme;
+  writeString('fsp_theme', nextTheme);
+  const meta = document.getElementById('theme-color-meta');
+  if (meta) meta.setAttribute('content', nextTheme === 'dark' ? '#000000' : '#5856D6');
+  const btn = document.getElementById('theme-toggle');
+  if (btn) {
+    btn.textContent = nextTheme === 'dark' ? '☀' : '☾';
+    btn.setAttribute('aria-label', nextTheme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre');
+    btn.setAttribute('title', nextTheme === 'dark' ? 'Mode clair' : 'Mode sombre');
+  }
+}
+
+function initTheme() {
+  applyTheme(getPreferredTheme());
+}
+
+function toggleTheme() {
+  const current = document.documentElement.dataset.theme || getPreferredTheme();
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
 
 // ── Persistence ──────────────────────────────────────────────
 function saveProgress(sessionId, done) {
@@ -936,56 +967,85 @@ function diagEngaged(d) {
   return Object.values(d.checks || {}).some(arr => (arr || []).some(Boolean));
 }
 
+function diagAnsweredCount(d) {
+  return CONTENT.baseline.filter(q => {
+    const checks = (d.checks && d.checks[q.id]) || [];
+    const text = (d.texts && d.texts[q.id] || '').trim();
+    return text || checks.some(Boolean);
+  }).length;
+}
+
 function renderQuiz() {
   const container = document.getElementById('quiz-questions');
   container.innerHTML = '';
   const diag = getDiagState();
+  const total = CONTENT.baseline.length;
+  STATE.diagQuestionIndex = Math.min(Math.max(STATE.diagQuestionIndex, 0), total - 1);
+  const bq = CONTENT.baseline[STATE.diagQuestionIndex];
+  const crit = bq.criteria || [];
+  const checks = (diag.checks && diag.checks[bq.id]) || [];
+  const savedText = (diag.texts && diag.texts[bq.id]) || '';
 
   // Bandeau de score (calculé)
   container.innerHTML += `<div id="diag-banner"></div>`;
 
-  // Intro
   container.innerHTML += `
-    <div class="card" style="padding:16px;margin-bottom:12px;">
-      <div style="font-size:16px;font-weight:700;margin-bottom:6px;">📊 Auto-évaluation diagnostique</div>
-      <div style="font-size:14px;color:var(--text-secondary);line-height:1.5;">
-        Pour chaque question : rédige ta réponse, révèle la réponse idéale, puis coche honnêtement les critères que ta réponse remplissait. Le score sur 100 se calcule tout seul.
+    <div class="diag-guide-card">
+      <div class="diag-guide-kicker">Mode d'emploi</div>
+      <div class="diag-guide-title">Réponds d'abord, corrige ensuite.</div>
+      <div class="diag-guide-text">
+        Le bilan sert à situer ton point de départ. Pour chaque question : écris une réponse courte, révèle le modèle, puis coche les critères réellement présents dans ta réponse.
       </div>
     </div>`;
 
-  // Questions
+  container.innerHTML += `
+    <div class="diag-progress-card">
+      <div class="diag-progress-top">
+        <div>
+          <div class="diag-progress-label">Avancement</div>
+          <div class="diag-progress-count" id="diag-progress-count">${diagAnsweredCount(diag)} / ${total} questions engagées</div>
+        </div>
+        <div class="diag-step-pill">Question ${STATE.diagQuestionIndex + 1} / ${total}</div>
+      </div>
+      <div class="diag-stepper">
+        ${CONTENT.baseline.map((q, i) => {
+          const done = ((diag.texts && diag.texts[q.id] || '').trim()) || (((diag.checks && diag.checks[q.id]) || []).some(Boolean));
+          return `<button class="diag-step ${i === STATE.diagQuestionIndex ? 'active' : ''} ${done ? 'done' : ''}" onclick="setDiagQuestion(${i})">${i + 1}</button>`;
+        }).join('')}
+      </div>
+    </div>`;
+
   const wrap = document.createElement('div');
   wrap.className = 'quiz-screen-card';
-  CONTENT.baseline.forEach(bq => {
-    const crit = bq.criteria || [];
-    const checks = (diag.checks && diag.checks[bq.id]) || [];
-    const savedText = (diag.texts && diag.texts[bq.id]) || '';
-    const div = document.createElement('div');
-    div.className = 'baseline-question';
-    div.innerHTML = `
-      <div class="bq-number">
-        <span>Q${bq.id}</span>
-        <span class="bq-points">${bq.points} pts</span>
-      </div>
-      <div class="bq-q">${bq.q}</div>
-      <textarea class="recall-textarea" rows="3" placeholder="Rédige ta réponse avant de révéler la correction…"
-        oninput="saveDiagText(${bq.id}, this.value)">${savedText}</textarea>
-      <button class="bq-show-btn" onclick="revealBaselineAnswer(this)">Voir la réponse idéale</button>
-      <div class="bq-ideal">${bq.ideal}</div>
-      <div class="bq-checklist-label">Coche les critères que ta réponse remplissait :</div>
-      <div class="bq-checklist">
-        ${crit.map((c, ci) => `
-          <label class="bq-check ${checks[ci] ? 'checked' : ''}" id="bq-check-${bq.id}-${ci}">
-            <input type="checkbox" ${checks[ci] ? 'checked' : ''}
-              onchange="toggleDiagCriterion(${bq.id}, ${ci}, this.checked)">
-            <span class="bq-check-box">✓</span>
-            <span class="bq-check-text">${c}</span>
-          </label>`).join('')}
-      </div>
+  const div = document.createElement('div');
+  div.className = 'baseline-question';
+  div.innerHTML = `
+    <div class="bq-number">
+      <span>Question ${STATE.diagQuestionIndex + 1}</span>
+      <span class="bq-points">${bq.points} pts</span>
+    </div>
+    <div class="bq-q">${bq.q}</div>
+    <textarea class="recall-textarea" rows="5" placeholder="Rédige ta réponse avant de révéler la correction…"
+      oninput="saveDiagText(${bq.id}, this.value)">${savedText}</textarea>
+    <button class="bq-show-btn" onclick="revealBaselineAnswer(this)">Voir la réponse modèle</button>
+    <div class="bq-ideal">${bq.ideal}</div>
+    <div class="bq-checklist-label">Critères présents dans ta réponse :</div>
+    <div class="bq-checklist">
+      ${crit.map((c, ci) => `
+        <label class="bq-check ${checks[ci] ? 'checked' : ''}" id="bq-check-${bq.id}-${ci}">
+          <input type="checkbox" ${checks[ci] ? 'checked' : ''}
+            onchange="toggleDiagCriterion(${bq.id}, ${ci}, this.checked)">
+          <span class="bq-check-box">✓</span>
+          <span class="bq-check-text">${c}</span>
+        </label>`).join('')}
+    </div>
+    <div class="bq-footer">
+      <button class="diag-nav-btn" onclick="prevDiagQuestion()" ${STATE.diagQuestionIndex === 0 ? 'disabled' : ''}>Précédent</button>
       <div class="bq-qscore" id="bq-qscore-${bq.id}">${qScoreLabel(bq, checks)}</div>
-    `;
-    wrap.appendChild(div);
-  });
+      <button class="diag-nav-btn primary" onclick="nextDiagQuestion()" ${STATE.diagQuestionIndex === total - 1 ? 'disabled' : ''}>Suivant</button>
+    </div>
+  `;
+  wrap.appendChild(div);
   container.appendChild(wrap);
 
   renderDiagBanner(diag);
@@ -1023,14 +1083,31 @@ function renderDiagBanner(diag) {
 function revealBaselineAnswer(btn) {
   const ideal = btn.nextElementSibling;
   ideal.classList.toggle('visible');
-  btn.textContent = ideal.classList.contains('visible') ? 'Masquer' : 'Voir la réponse idéale';
+  btn.textContent = ideal.classList.contains('visible') ? 'Masquer' : 'Voir la réponse modèle';
 }
+
+window.setDiagQuestion = function(index) {
+  STATE.diagQuestionIndex = Math.min(Math.max(index, 0), CONTENT.baseline.length - 1);
+  renderQuiz();
+};
+
+window.nextDiagQuestion = function() {
+  window.setDiagQuestion(STATE.diagQuestionIndex + 1);
+};
+
+window.prevDiagQuestion = function() {
+  window.setDiagQuestion(STATE.diagQuestionIndex - 1);
+};
 
 window.saveDiagText = function(qid, text) {
   const d = getDiagState();
   if (!d.texts) d.texts = {};
   d.texts[qid] = text;
   saveDiagState(d);
+  const progressEl = document.getElementById('diag-progress-count');
+  if (progressEl) progressEl.textContent = `${diagAnsweredCount(d)} / ${CONTENT.baseline.length} questions engagées`;
+  const activeStep = document.querySelector('.diag-step.active');
+  if (activeStep) activeStep.classList.toggle('done', !!text.trim() || (((d.checks && d.checks[qid]) || []).some(Boolean)));
 };
 
 window.toggleDiagCriterion = function(qid, ci, checked) {
@@ -1051,6 +1128,8 @@ window.toggleDiagCriterion = function(qid, ci, checked) {
   if (label) label.classList.toggle('checked', checked);
   const qScoreEl = document.getElementById(`bq-qscore-${qid}`);
   if (qScoreEl) qScoreEl.textContent = qScoreLabel(bq, d.checks[qid]);
+  const progressEl = document.getElementById('diag-progress-count');
+  if (progressEl) progressEl.textContent = `${diagAnsweredCount(d)} / ${CONTENT.baseline.length} questions engagées`;
   renderDiagBanner(d);
 };
 
@@ -1063,6 +1142,7 @@ function resetAllProgress() {
   } catch (e) {}
   // Vider l'état d'exercices en mémoire
   Object.keys(SESSION_EXERCISE_STATE).forEach(k => delete SESSION_EXERCISE_STATE[k]);
+  STATE.diagQuestionIndex = 0;
   renderQuiz();
   renderHome();
   showToast('Progression réinitialisée.');
@@ -1181,6 +1261,7 @@ function initSwipe(el, onLeft, onRight) {
 
 // ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
 
   // Nav
   document.querySelectorAll('.nav-item').forEach(item => {
