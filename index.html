@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#5856D6" id="theme-color-meta">
+  <meta name="color-scheme" content="light dark">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Rhétorique">
-  <meta name="description" content="Forger sa Parole — Rhétorique, vocabulaire, argumentation en 18 sessions">
+  <meta name="apple-mobile-web-app-title" content="Forger sa Parole">
+  <meta name="application-name" content="Forger sa Parole">
+  <meta name="description" content="Forger sa Parole — s'exprimer avec clarté, autorité et respect en 18 sessions.">
 
   <title>Forger sa Parole</title>
   <script>
@@ -25,7 +27,10 @@
   <link rel="manifest" href="manifest.json">
 
   <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="apple-touch-icon-180.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
 
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
@@ -104,6 +109,21 @@
           <div class="progress-desc" id="home-next-desc">Cours magistral · ~20 min</div>
           <div class="progress-action" id="home-next-btn" onclick="">▶ Commencer</div>
         </div>
+      </div>
+    </div>
+
+    <div class="focus-card" id="home-focus-card">
+      <div class="focus-card-top">
+        <div>
+          <div class="focus-kicker">Prochaine action</div>
+          <div class="focus-title" id="home-focus-title">Installer un réflexe utile aujourd'hui</div>
+        </div>
+        <div class="focus-pill" id="home-focus-pill">2 min</div>
+      </div>
+      <div class="focus-text" id="home-focus-text">Ouvre ta prochaine session et transforme le cours en une phrase que tu peux utiliser dès aujourd'hui.</div>
+      <div class="focus-actions">
+        <button class="focus-btn primary" id="home-focus-primary" type="button">Continuer</button>
+        <button class="focus-btn ghost" type="button" onclick="startQuickReview()">Réviser</button>
       </div>
     </div>
 

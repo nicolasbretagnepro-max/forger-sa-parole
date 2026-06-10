@@ -175,6 +175,9 @@ function navigate(screen) {
   document.getElementById(screen + '-screen').classList.add('active');
   document.querySelector(`[data-screen="${screen}"]`)?.classList.add('active');
   STATE.currentScreen = screen;
+  if (location.hash.replace('#', '') !== screen) {
+    history.replaceState(history.state, '', '#' + screen);
+  }
   if (screen === 'home')     renderHome();
   if (screen === 'sessions') renderSessions();
   if (screen === 'vocab')    renderVocab();
@@ -208,6 +211,26 @@ function renderHome() {
     : 'Reviens aux sessions pour réviser.';
   document.getElementById('home-next-btn').onclick = () => next ? openSession(next.id) : navigate('sessions');
   document.getElementById('home-next-btn').textContent = next ? '▶ Commencer' : '↩ Revoir';
+
+  const focusTitle = document.getElementById('home-focus-title');
+  const focusText = document.getElementById('home-focus-text');
+  const focusPill = document.getElementById('home-focus-pill');
+  const focusPrimary = document.getElementById('home-focus-primary');
+  if (focusTitle && focusText && focusPill && focusPrimary) {
+    if (next) {
+      focusTitle.textContent = next.objectif || next.theme;
+      focusText.textContent = next.action || next.anchor || 'Lis la session, puis formule une phrase que tu pourras tester dans une conversation réelle.';
+      focusPill.textContent = next.duration || '15 min';
+      focusPrimary.textContent = 'Ouvrir la session';
+      focusPrimary.onclick = () => openSession(next.id);
+    } else {
+      focusTitle.textContent = 'Rejouer une situation difficile';
+      focusText.textContent = 'Choisis une conversation récente où tu aurais voulu être plus clair, plus calme ou plus ferme, puis retravaille-la avec les exercices.';
+      focusPill.textContent = '10 min';
+      focusPrimary.textContent = 'Voir les exercices';
+      focusPrimary.onclick = () => navigate('sessions');
+    }
+  }
 
   // Stats
   document.getElementById('stat-sessions').textContent = done;
@@ -331,6 +354,11 @@ function openSession(sessionId) {
   document.querySelector('.detail-body').scrollTop = 0;
   updateReadingProgress();
   if (!wasOpen) openOverlay(_doCloseSession);
+}
+
+function openSessionExercise(sessionId) {
+  openSession(sessionId);
+  switchDetailTab('exercices');
 }
 
 function _doCloseSession() {
@@ -729,7 +757,12 @@ function showCelebration(sessionId) {
 
 function closeCelebration() {
   document.getElementById('celebration').classList.remove('show');
-  renderHome();
+  const next = CONTENT.sessions.find(s => !STATE.progress[s.id]);
+  if (next) {
+    openSession(next.id);
+  } else {
+    renderHome();
+  }
 }
 
 function revealAnswer(btn) {

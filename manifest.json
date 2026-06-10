@@ -1,8 +1,10 @@
 {
   "name": "Forger sa Parole",
-  "short_name": "Rhétorique",
-  "description": "Rhétorique, vocabulaire, argumentation — programme complet en 18 sessions",
-  "start_url": "./index.html",
+  "short_name": "Parole",
+  "description": "S'exprimer avec clarté, autorité et respect — programme complet en 18 sessions.",
+  "id": "/forger-sa-parole/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#5856D6",
   "theme_color": "#5856D6",
@@ -29,7 +31,7 @@
       "purpose": "any maskable"
     },
     {
-      "src": "apple-touch-icon.png",
+      "src": "apple-touch-icon-180.png",
       "sizes": "180x180",
       "type": "image/png"
     }
@@ -38,12 +40,12 @@
   "shortcuts": [
     {
       "name": "Sessions",
-      "url": "./index.html#sessions",
+      "url": "./#sessions",
       "description": "Accéder aux 18 sessions du cours"
     },
     {
       "name": "Vocabulaire",
-      "url": "./index.html#vocab",
+      "url": "./#vocab",
       "description": "Flashcards de vocabulaire rhétorique"
     }
   ]
