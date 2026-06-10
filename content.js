@@ -2761,6 +2761,325 @@ vocabulary: [
   { word: "Eloquentia", def: "Du latin eloqui (parler avec force et clarté). Pour Cicéron, l'éloquence au sens plein n'est pas le parler fleuri mais la manifestation externe d'une pensée organisée, d'un caractère formé et d'une préparation méticuleuse. ≠ facundia (facilité verbale seule).", example: "Cicéron distingue la facundia (trouver les mots facilement) de l'eloquentia (les ordonner au service d'un but). L'éloquence est une compétence totale — intellectuelle, éthique et performative — pas un talent naturel.", category: "Philosophie", session: 18 }
 ],
 
+// ── PARCOURS RESPECT ──────────────────────────────────────────
+respectPath: {
+  intro: "Ce parcours sert à transformer la rhétorique en comportement : parler plus net, poser des limites, défendre une idée sans devenir agressif, et rester stable quand la tension monte.",
+  modules: [
+    {
+      id: "assertivite",
+      icon: "🧭",
+      title: "Assertivité",
+      subtitle: "Dire non, poser une limite, demander clairement.",
+      principle: "Une demande claire vaut mieux qu'une justification longue. Moins vous vous excusez d'exister, plus votre parole devient lisible.",
+      methodology: [
+        "Nommer le fait sans dramatiser : décrivez ce qui se passe, pas ce que l'autre 'est'.",
+        "Dire votre position en une phrase courte : oui, non, pas maintenant, pas comme ça, j'ai besoin de X.",
+        "Donner une raison brève si elle aide la compréhension, pas pour obtenir la permission d'exister.",
+        "Proposer une alternative seulement si vous voulez réellement l'offrir.",
+        "Répéter calmement la limite si l'autre insiste : même phrase, même ton, moins de mots."
+      ],
+      coaching: [
+        "Votre ton doit être plus calme que votre message n'est ferme. C'est ce contraste qui donne de l'autorité.",
+        "Ne cherchez pas à être parfaitement compris avant de poser la limite. La limite vient d'abord, l'explication ensuite.",
+        "Un non trop long devient une invitation à négocier. Un non clair devient une information.",
+        "Remplacez l'approbation recherchée par la clarté donnée : votre but n'est pas que l'autre aime votre limite, mais qu'il la comprenne."
+      ],
+      examples: [
+        {
+          weak: "Désolé, je suis un peu débordé, je ne sais pas si je vais pouvoir, peut-être plus tard...",
+          strong: "Je ne peux pas le prendre aujourd'hui. Je peux le regarder vendredi matin.",
+          why: "La version forte pose la limite puis donne une alternative concrète. Elle ne demande pas à l'autre de valider votre surcharge."
+        },
+        {
+          weak: "Je voulais juste dire que ça ne me convient pas trop.",
+          strong: "Ce fonctionnement ne me convient pas. J'ai besoin qu'on définisse clairement qui décide quoi.",
+          why: "On passe d'une gêne floue à une demande observable. C'est ce qui permet à l'autre d'agir."
+        }
+      ],
+      drill: "Formulez une demande en une phrase, puis ajoutez une raison courte. Stoppez-vous avant la troisième justification.",
+      practiceLadder: [
+        "Niveau 1 : écrivez 5 refus courts, chacun en moins de 14 mots.",
+        "Niveau 2 : dites-les à voix haute avec une pause après le non.",
+        "Niveau 3 : ajoutez une seule alternative possible, sans vous excuser.",
+        "Niveau 4 : rejouez une vraie situation récente où vous avez trop cédé.",
+        "Niveau 5 : utilisez une phrase assertive dans une interaction réelle et notez la réaction."
+      ],
+      mastery: [
+        "Vous pouvez dire non sans sourire nerveusement ni accélérer.",
+        "Votre phrase tient même si l'autre insiste une deuxième fois.",
+        "Vous savez distinguer justification utile et surjustification défensive.",
+        "Vous terminez par une demande claire, pas par une gêne laissée en suspens."
+      ],
+      redFlags: ["Je voulais juste...", "Désolé mais...", "Peut-être que je me trompe...", "Si ça ne dérange pas trop..."],
+      phrases: [
+        "Je ne peux pas m'engager là-dessus.",
+        "J'ai besoin que ce point soit traité avant de continuer.",
+        "Je comprends la contrainte, mais ma réponse reste non.",
+        "Voilà ce que je propose concrètement.",
+        "Je veux être clair : ce fonctionnement ne me convient pas."
+      ],
+      scenarios: [
+        "On vous demande un service de dernière minute alors que vous êtes déjà saturé.",
+        "Quelqu'un minimise votre besoin en disant : 'Ce n'est pas si grave.'",
+        "Vous voulez demander un délai, une ressource ou une décision précise."
+      ]
+    },
+    {
+      id: "presence",
+      icon: "🎙️",
+      title: "Présence orale",
+      subtitle: "Voix, débit, silence, regard, posture.",
+      principle: "La présence vient de la lenteur maîtrisée. Une parole posée donne à l'autre le temps de vous accorder du poids.",
+      methodology: [
+        "Ancrer le corps : pieds stables, épaules basses, respiration abdominale avant la première phrase.",
+        "Baisser le débit de 15 à 20 %. La présence n'est pas lenteur molle, c'est absence de précipitation.",
+        "Placer une pause avant l'idée importante, pas seulement après. La pause annonce que ce qui vient compte.",
+        "Faire descendre la fin des phrases. Une intonation qui monte transforme une affirmation en demande d'accord.",
+        "Regarder une personne par idée, puis changer. Le regard scande la pensée."
+      ],
+      coaching: [
+        "La voix crédible n'est pas forcément grave ; elle est stable. Cherchez la stabilité avant l'effet.",
+        "Le silence est un outil de commandement doux. Celui qui supporte le silence paraît moins dépendant de l'approbation.",
+        "Ne compensez pas un doute intérieur par plus de mots. Compensez par une structure plus nette.",
+        "Si vous perdez vos moyens, ralentissez physiquement avant de chercher la bonne phrase."
+      ],
+      examples: [
+        {
+          weak: "Donc voilà, en fait je pense que peut-être on pourrait essayer cette solution parce qu'elle est intéressante.",
+          strong: "Ma recommandation est simple : testons cette solution pendant deux semaines.",
+          why: "La version forte commence par la conclusion et enlève les amortisseurs verbaux."
+        },
+        {
+          weak: "Je vais essayer d'expliquer rapidement, je ne veux pas prendre trop de temps.",
+          strong: "Je vais prendre une minute pour clarifier le point central.",
+          why: "Vous annoncez un cadre au lieu de vous excuser d'occuper l'espace."
+        }
+      ],
+      drill: "Dites votre phrase centrale en 20 secondes. Recommencez deux fois : plus lentement, puis avec une pause avant le mot important.",
+      practiceLadder: [
+        "Niveau 1 : lisez une phrase à voix haute en marquant trois pauses volontaires.",
+        "Niveau 2 : dites une idée en 20 secondes, puis en 12 secondes, sans accélérer.",
+        "Niveau 3 : entraînez une conclusion avec intonation descendante.",
+        "Niveau 4 : expliquez un sujet simple debout, mains immobiles pendant la première phrase.",
+        "Niveau 5 : en conversation réelle, faites une pause de deux secondes avant votre point important."
+      ],
+      mastery: [
+        "Vous ne remplissez plus automatiquement les blancs par 'euh', 'du coup', 'en fait'.",
+        "Vos fins de phrases ne demandent pas implicitement validation.",
+        "Vous pouvez ralentir quand vous sentez la pression monter.",
+        "Votre posture reste cohérente avec votre message."
+      ],
+      redFlags: ["Finir ses phrases en montant", "Parler trop vite", "Remplir tous les silences", "Regarder ailleurs au moment important"],
+      phrases: [
+        "Le point central est le suivant.",
+        "Je vais le dire simplement.",
+        "Prenons dix secondes pour clarifier.",
+        "Ce que je veux éviter, c'est ceci.",
+        "Ma recommandation tient en une phrase."
+      ],
+      scenarios: [
+        "Vous devez expliquer une idée devant trois personnes pressées.",
+        "Vous sentez que votre voix accélère parce que vous voulez convaincre.",
+        "Vous devez conclure une réunion avec calme et autorité."
+      ]
+    },
+    {
+      id: "reunion",
+      icon: "💼",
+      title: "Réunion / travail",
+      subtitle: "Intervenir, défendre une idée, gérer l'objection.",
+      principle: "En réunion, celui qui structure le débat prend souvent le leadership, même sans parler le plus.",
+      methodology: [
+        "Entrer par le cadrage : 'le sujet à trancher est...' avant d'entrer dans les détails.",
+        "Formuler votre point en pyramide : conclusion, deux raisons, prochaine étape.",
+        "Traiter l'objection comme une donnée, pas comme une attaque.",
+        "Isoler le désaccord réel : coût, priorité, risque, délai, responsabilité ou principe.",
+        "Terminer par une demande opérationnelle : arbitrer, tester, décider, reporter, affecter."
+      ],
+      coaching: [
+        "Ne gagnez pas une réunion en parlant beaucoup ; gagnez-la en rendant la décision plus claire.",
+        "Quand quelqu'un objecte, commencez par nommer la part vraie de son objection. Vous récupérez de la crédibilité.",
+        "Si le débat part dans tous les sens, posez une question de cadrage. Les personnes structurantes deviennent naturellement écoutées.",
+        "Votre phrase la plus importante doit arriver avant que l'attention du groupe baisse."
+      ],
+      examples: [
+        {
+          weak: "Oui alors il y a plusieurs choses, déjà on pourrait peut-être revoir le planning parce que je pense qu'il y a un souci.",
+          strong: "Le planning actuel crée un risque sur la livraison. Je propose qu'on arbitre aujourd'hui entre délai et périmètre.",
+          why: "La version forte nomme le risque et transforme la discussion en décision."
+        },
+        {
+          weak: "Je ne suis pas sûr que tu aies bien compris ce que je voulais dire.",
+          strong: "Je reformule le point : ma proposition ne porte pas sur le budget, elle porte sur la priorité.",
+          why: "Vous évitez le reproche et reprenez le terrain du débat."
+        }
+      ],
+      drill: "Préparez une intervention en trois lignes : décision demandée, raison principale, prochaine étape.",
+      practiceLadder: [
+        "Niveau 1 : transformez une opinion en demande de décision.",
+        "Niveau 2 : préparez une intervention en 3 phrases maximum.",
+        "Niveau 3 : écrivez l'objection la plus probable et votre réponse en une phrase.",
+        "Niveau 4 : entraînez une interruption constructive : 'je propose qu'on recadre'.",
+        "Niveau 5 : dans une vraie réunion, posez au moins une question qui clarifie la décision."
+      ],
+      mastery: [
+        "Vous savez intervenir sans attendre que tout le monde soit d'accord pour vous laisser une place.",
+        "Vous répondez aux objections sans vous disperser.",
+        "Vous savez ramener une discussion vers une décision observable.",
+        "Votre parole augmente la clarté collective."
+      ],
+      redFlags: ["Attendre l'ouverture parfaite", "Empiler trop d'arguments", "Répondre à tout au lieu de cadrer", "Laisser l'objection définir le terrain"],
+      phrases: [
+        "Je voudrais ajouter un point de cadrage.",
+        "L'objection est légitime ; voici comment je la traite.",
+        "La décision à prendre aujourd'hui est celle-ci.",
+        "Je propose qu'on distingue deux sujets.",
+        "Pour avancer, il nous faut trancher ce point."
+      ],
+      scenarios: [
+        "Votre idée est balayée trop vite en réunion.",
+        "Quelqu'un répond à côté de votre proposition.",
+        "Vous devez défendre un projet devant une personne sceptique."
+      ]
+    },
+    {
+      id: "conflit",
+      icon: "🧊",
+      title: "Conflit calme",
+      subtitle: "Répondre sans monter en tension.",
+      principle: "Le calme n'est pas la passivité. C'est la capacité à rester précis quand l'autre devient flou, rapide ou piquant.",
+      methodology: [
+        "Séparer le ton, le fond et la relation. Ne répondez pas aux trois en même temps.",
+        "Nommer le procédé si nécessaire : interruption, accusation, généralisation, procès d'intention.",
+        "Demander une précision avant de vous défendre. La précision fait baisser la charge émotionnelle.",
+        "Refuser le cadre injuste sans contre-attaquer.",
+        "Revenir au point traitable : fait, demande, décision ou limite."
+      ],
+      coaching: [
+        "Votre première victoire est physiologique : respirer, ralentir, ne pas suivre le rythme de l'autre.",
+        "Une personne agressive cherche souvent à vous faire quitter votre axe. Votre calme doit être actif, pas soumis.",
+        "Ne prouvez pas que vous êtes quelqu'un de bien sous accusation floue. Faites préciser l'accusation.",
+        "Plus l'autre devient général, plus vous devez devenir spécifique."
+      ],
+      examples: [
+        {
+          weak: "Mais non, ce n'est pas du tout ce que j'ai voulu dire, tu exagères toujours.",
+          strong: "Je veux répondre précisément. Qu'est-ce que tu me reproches dans ce que je viens de dire ?",
+          why: "Vous sortez de la défense globale et obligez l'échange à revenir sur un fait."
+        },
+        {
+          weak: "Tu me parles mal, ça commence à m'énerver.",
+          strong: "Je veux bien continuer cette discussion, mais pas sur ce ton.",
+          why: "La version forte pose une condition claire sans escalader."
+        }
+      ],
+      drill: "Face à une attaque, répondez d'abord par une clarification, pas par une défense. Une question nette ralentit l'escalade.",
+      practiceLadder: [
+        "Niveau 1 : écrivez 5 réponses à des attaques sans utiliser 'tu fais toujours'.",
+        "Niveau 2 : entraînez la phrase 'qu'est-ce que tu veux dire précisément ?' avec un ton neutre.",
+        "Niveau 3 : distinguez dans trois conflits passés le fait, l'interprétation et la demande.",
+        "Niveau 4 : rejouez une scène en répondant uniquement par clarification et limite.",
+        "Niveau 5 : dans une tension réelle, ralentissez volontairement votre première réponse."
+      ],
+      mastery: [
+        "Vous ne vous défendez plus contre des reproches flous.",
+        "Vous savez poser une limite de ton sans humilier l'autre.",
+        "Vous revenez au sujet même quand la discussion devient personnelle.",
+        "Votre calme reste ferme, pas effacé."
+      ],
+      redFlags: ["Répondre au ton plutôt qu'au fond", "Se justifier trop vite", "Ironiser", "Accepter un cadrage injuste"],
+      phrases: [
+        "Qu'est-ce que tu me reproches exactement ?",
+        "Je veux bien répondre, mais pas sur ce ton.",
+        "Restons sur le point précis.",
+        "Je n'accepte pas cette formulation.",
+        "Je vais répondre au fond, pas à l'attaque."
+      ],
+      scenarios: [
+        "Quelqu'un vous coupe avec une remarque sèche.",
+        "On vous attribue une intention que vous n'avez pas.",
+        "Une discussion professionnelle devient personnelle."
+      ]
+    },
+    {
+      id: "influence",
+      icon: "🤝",
+      title: "Influence éthique",
+      subtitle: "Faire adhérer sans manipuler.",
+      principle: "L'influence saine augmente la clarté de choix de l'autre. Elle ne cache ni les coûts, ni les objections, ni les alternatives.",
+      methodology: [
+        "Commencer par l'intérêt de l'autre, pas par votre envie.",
+        "Formuler le choix réel : bénéfice, coût, risque, alternative.",
+        "Nommer l'objection principale avant que l'autre ait besoin de la lancer.",
+        "Demander un engagement proportionné : prochaine étape, test, accord de principe, retour daté.",
+        "Laisser une sortie honorable. L'adhésion forcée crée de la résistance différée."
+      ],
+      coaching: [
+        "Le charisme durable vient d'une impression rare : avec vous, les gens comprennent mieux ce qu'ils veulent décider.",
+        "N'essayez pas de supprimer les objections. Servez-vous-en pour rendre votre proposition plus crédible.",
+        "Une demande vague produit une approbation vague. Une demande précise produit une réponse exploitable.",
+        "L'influence éthique cherche un oui solide, pas un oui arraché."
+      ],
+      examples: [
+        {
+          weak: "Franchement, ce projet est super, il faut qu'on le fasse, ça va tout changer.",
+          strong: "Ce projet peut réduire nos délais. Son coût réel est deux semaines de focus. Je propose un test limité avant décision complète.",
+          why: "La version forte ne survend pas : elle montre bénéfice, coût et étape réversible."
+        },
+        {
+          weak: "Tu es d'accord avec moi, non ?",
+          strong: "Est-ce que tu serais d'accord pour valider la prochaine étape, pas encore tout le projet ?",
+          why: "La demande devient plus facile à accepter parce qu'elle est précise et proportionnée."
+        }
+      ],
+      drill: "Présentez votre projet avec : bénéfice, objection honnête, réponse, demande explicite.",
+      practiceLadder: [
+        "Niveau 1 : écrivez votre proposition en une phrase sans adjectif promotionnel.",
+        "Niveau 2 : ajoutez l'objection la plus forte contre votre propre idée.",
+        "Niveau 3 : formulez une demande minimale acceptable.",
+        "Niveau 4 : préparez deux versions : une pour un allié, une pour un sceptique.",
+        "Niveau 5 : testez votre proposition auprès d'une vraie personne et notez son objection spontanée."
+      ],
+      mastery: [
+        "Vous savez faire approuver une prochaine étape sans forcer l'accord total.",
+        "Vous rendez les objections discutables au lieu de les cacher.",
+        "Votre demande finale est claire, datée ou observable.",
+        "L'autre peut dire non sans perdre la face."
+      ],
+      redFlags: ["Survendre", "Masquer le coût", "Forcer l'urgence", "Confondre adhésion et soumission"],
+      phrases: [
+        "Voici ce que cette option apporte, et voici son coût.",
+        "L'objection la plus sérieuse est celle-ci.",
+        "Je ne te demande pas d'être d'accord tout de suite.",
+        "Ce que j'aimerais obtenir aujourd'hui, c'est un accord sur la prochaine étape.",
+        "Tu peux refuser ; je veux surtout que la décision soit claire."
+      ],
+      scenarios: [
+        "Vous voulez faire approuver une idée sans paraître insistant.",
+        "Votre interlocuteur hésite mais n'exprime pas clairement pourquoi.",
+        "Vous devez obtenir un engagement concret après une discussion."
+      ]
+    }
+  ],
+  dailyScenarios: [
+    "Quelqu'un vous interrompt deux fois. Répondez sans agressivité, mais sans laisser passer.",
+    "Vous n'êtes pas d'accord avec une décision. Formulez votre opposition en 30 secondes.",
+    "On vous demande de faire plus que ce qui était prévu. Posez une limite claire.",
+    "Un interlocuteur sceptique dit : 'Je ne vois pas l'intérêt.' Défendez votre idée.",
+    "Une personne hausse le ton. Ramenez la discussion au fond.",
+    "Vous devez demander explicitement une décision, un délai ou un engagement.",
+    "Vous sentez que vous vous justifiez trop. Reformulez en deux phrases.",
+    "Vous devez dire une vérité inconfortable sans humilier l'autre."
+  ],
+  journalPrompts: [
+    "Situation vécue",
+    "Ce que j'ai dit",
+    "Ce que j'aurais voulu dire",
+    "Phrase plus claire à tester",
+    "Niveau de calme /10"
+  ]
+},
+
 // ── DIAGNOSTIC DE BASELINE ───────────────────────────────────
 baseline: [
   {

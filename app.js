@@ -180,6 +180,7 @@ function navigate(screen) {
   }
   if (screen === 'home')     renderHome();
   if (screen === 'sessions') renderSessions();
+  if (screen === 'respect')  renderRespect();
   if (screen === 'vocab')    renderVocab();
   if (screen === 'figures')  renderFigures();
   if (screen === 'quiz')     renderQuiz();
@@ -325,6 +326,220 @@ function renderSessions() {
       container.appendChild(div);
     });
   });
+}
+
+// ── RESPECT PATH ──────────────────────────────────────────────
+function getRespectState() {
+  return readJSON('fsp_respect', { done: [], journal: {}, selectedModule: null, lastPractice: null });
+}
+
+function saveRespectState(state) {
+  writeJSON('fsp_respect', state);
+}
+
+function getDailyRespectScenario() {
+  const list = CONTENT.respectPath?.dailyScenarios || [];
+  if (!list.length) return '';
+  const dayKey = Math.floor(Date.now() / 86400000);
+  return list[dayKey % list.length];
+}
+
+function renderRespect() {
+  const data = CONTENT.respectPath;
+  const container = document.getElementById('respect-content');
+  if (!data || !container) return;
+
+  const state = getRespectState();
+  const modules = data.modules || [];
+  const done = state.done || [];
+  const selectedId = state.selectedModule || modules[0]?.id;
+  const selected = modules.find(m => m.id === selectedId) || modules[0];
+  const pct = modules.length ? Math.round((done.length / modules.length) * 100) : 0;
+  const scenario = getDailyRespectScenario();
+
+  container.innerHTML = `
+    <div class="respect-hero">
+      <div class="respect-kicker">Parcours Se faire respecter</div>
+      <div class="respect-title">Parler net, calme et difficile à balayer.</div>
+      <div class="respect-intro">${data.intro}</div>
+      <div class="respect-progress">
+        <div class="respect-progress-top">
+          <span>${done.length}/${modules.length} modules travaillés</span>
+          <span>${pct}%</span>
+        </div>
+        <div class="respect-progress-bar"><div style="width:${pct}%"></div></div>
+      </div>
+    </div>
+
+    <div class="respect-daily-card">
+      <div class="respect-card-label">Situation du jour</div>
+      <div class="respect-scenario">${scenario}</div>
+      <div class="respect-timer-row">
+        <button class="respect-small-btn" type="button" onclick="startRespectTimer(30)">30 s</button>
+        <button class="respect-small-btn" type="button" onclick="startRespectTimer(60)">60 s</button>
+        <div class="respect-timer" id="respect-timer">Prêt</div>
+      </div>
+    </div>
+
+    <div class="section-title">Modules</div>
+    <div class="respect-module-row">
+      ${modules.map(m => `
+        <button class="respect-module-tab ${m.id === selected.id ? 'active' : ''} ${done.includes(m.id) ? 'done' : ''}"
+          type="button" onclick="selectRespectModule('${m.id}')">
+          <span>${m.icon}</span>
+          <span>${m.title}</span>
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="respect-module-detail">
+      <div class="respect-module-head">
+        <div class="respect-module-icon">${selected.icon}</div>
+        <div>
+          <div class="respect-module-title">${selected.title}</div>
+          <div class="respect-module-subtitle">${selected.subtitle}</div>
+        </div>
+      </div>
+
+      <div class="respect-rule">
+        <div class="respect-card-label">Règle mentale</div>
+        <div>${selected.principle}</div>
+      </div>
+
+      <div class="respect-learning-grid">
+        <div class="respect-learning-block">
+          <div class="respect-card-label">Méthode</div>
+          <ol class="respect-ordered-list">${(selected.methodology || []).map(x => `<li>${x}</li>`).join('')}</ol>
+        </div>
+        <div class="respect-learning-block">
+          <div class="respect-card-label">Conseils de mentor</div>
+          <ul class="respect-list">${(selected.coaching || []).map(x => `<li>${x}</li>`).join('')}</ul>
+        </div>
+      </div>
+
+      <div class="respect-examples">
+        <div class="respect-card-label">Transformer une phrase faible</div>
+        ${(selected.examples || []).map(ex => `
+          <div class="respect-example">
+            <div><span>Avant</span>${ex.weak}</div>
+            <div><span>Après</span>${ex.strong}</div>
+            <p>${ex.why}</p>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="respect-drill">
+        <div class="respect-card-label">Exercice immédiat</div>
+        <div>${selected.drill}</div>
+      </div>
+
+      <div class="respect-practice-ladder">
+        <div class="respect-card-label">Progression d'entraînement</div>
+        ${(selected.practiceLadder || []).map((step, i) => `
+          <div class="respect-ladder-step">
+            <div>${i + 1}</div>
+            <p>${step}</p>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="respect-columns">
+        <div>
+          <div class="respect-card-label">Phrases à répéter</div>
+          <div class="respect-phrase-list">
+            ${selected.phrases.map(p => `<button type="button" onclick="copyRespectPhrase('${encodeURIComponent(p)}')">${p}</button>`).join('')}
+          </div>
+        </div>
+        <div>
+          <div class="respect-card-label">Signaux à corriger</div>
+          <ul class="respect-list">${selected.redFlags.map(r => `<li>${r}</li>`).join('')}</ul>
+        </div>
+      </div>
+
+      <div class="respect-learning-block">
+        <div class="respect-card-label">Critères de maîtrise</div>
+        <ul class="respect-list">${(selected.mastery || []).map(x => `<li>${x}</li>`).join('')}</ul>
+      </div>
+
+      <div class="respect-card-label">Situations d'entraînement</div>
+      <div class="respect-scenario-list">
+        ${selected.scenarios.map(s => `<div>${s}</div>`).join('')}
+      </div>
+
+      <button class="respect-complete-btn ${done.includes(selected.id) ? 'done' : ''}" type="button" onclick="toggleRespectDone('${selected.id}')">
+        ${done.includes(selected.id) ? '✓ Module travaillé' : 'Marquer ce module travaillé'}
+      </button>
+    </div>
+
+    <div class="section-title">Journal de terrain</div>
+    <div class="respect-journal">
+      ${data.journalPrompts.map(prompt => {
+        const key = prompt.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+        const value = state.journal?.[key] || '';
+        return `
+          <label class="respect-field">
+            <span>${prompt}</span>
+            <textarea rows="2" oninput="saveRespectJournal('${key}', this.value)" placeholder="Note rapide après une vraie situation...">${value}</textarea>
+          </label>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+function selectRespectModule(moduleId) {
+  const state = getRespectState();
+  state.selectedModule = moduleId;
+  saveRespectState(state);
+  renderRespect();
+}
+
+function toggleRespectDone(moduleId) {
+  const state = getRespectState();
+  if (!state.done) state.done = [];
+  if (state.done.includes(moduleId)) {
+    state.done = state.done.filter(id => id !== moduleId);
+  } else {
+    state.done.push(moduleId);
+    state.lastPractice = new Date().toISOString();
+    updateStreak();
+    showToast('Module Respect travaillé.');
+  }
+  saveRespectState(state);
+  renderRespect();
+}
+
+function saveRespectJournal(key, value) {
+  const state = getRespectState();
+  if (!state.journal) state.journal = {};
+  state.journal[key] = value;
+  saveRespectState(state);
+}
+
+function copyRespectPhrase(encodedPhrase) {
+  const phrase = decodeURIComponent(encodedPhrase);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(phrase).then(() => {
+      showToast('Phrase copiée.');
+    }).catch(() => showToast(phrase));
+    return;
+  }
+  showToast(phrase);
+}
+
+function startRespectTimer(seconds) {
+  const timer = document.getElementById('respect-timer');
+  if (!timer) return;
+  clearInterval(window._respectTimer);
+  let left = seconds;
+  timer.textContent = `${left} s`;
+  window._respectTimer = setInterval(() => {
+    left -= 1;
+    timer.textContent = left > 0 ? `${left} s` : 'Terminé';
+    if (left <= 0) {
+      clearInterval(window._respectTimer);
+      showToast('Fin du round. Reformule une fois plus calmement.');
+    }
+  }, 1000);
 }
 
 // ── SESSION DETAIL ───────────────────────────────────────────
@@ -1169,7 +1384,7 @@ window.toggleDiagCriterion = function(qid, ci, checked) {
 function resetAllProgress() {
   if (!confirm('Réinitialiser toute la progression ? Sessions, mots mémorisés, streak, score et réponses d\'exercices seront effacés.')) return;
   try {
-    ['fsp_progress', 'fsp_streak', 'fsp_baseline', 'fsp_words', 'fsp_log', 'fsp_exstate', 'fsp_diag'].forEach(k => localStorage.removeItem(k));
+    ['fsp_progress', 'fsp_streak', 'fsp_baseline', 'fsp_words', 'fsp_log', 'fsp_exstate', 'fsp_diag', 'fsp_respect'].forEach(k => localStorage.removeItem(k));
     // Brouillons d'écriture (fsp_we_*)
     Object.keys(localStorage).filter(k => k.startsWith('fsp_we_')).forEach(k => localStorage.removeItem(k));
   } catch (e) {}
@@ -1336,7 +1551,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Raccourcis PWA (#sessions, #vocab, …) au lancement
   const hash = (location.hash || '').replace('#', '');
-  if (['home', 'sessions', 'vocab', 'figures', 'quiz'].includes(hash)) {
+  if (['home', 'sessions', 'respect', 'vocab', 'figures', 'quiz'].includes(hash)) {
     navigate(hash);
   }
 });

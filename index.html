@@ -133,6 +133,11 @@
     <!-- Quick actions -->
     <div class="section-title">Accès rapide</div>
     <div class="quick-actions">
+      <div class="quick-action" onclick="navigate('respect')">
+        <div class="quick-action-icon">🛡️</div>
+        <div class="quick-action-label">Respect</div>
+        <div class="quick-action-desc">Assertivité, limites, calme</div>
+      </div>
       <div class="quick-action" onclick="navigate('vocab')">
         <div class="quick-action-icon">🃏</div>
         <div class="quick-action-label">Flashcards</div>
@@ -156,6 +161,16 @@
     </div>
 
   </div><!-- /home-screen -->
+
+
+  <!-- ══ RESPECT SCREEN ═══════════════════════════════════ -->
+  <div id="respect-screen" class="screen">
+    <div class="page-header">
+      <div class="page-title">Respect</div>
+      <div class="page-subtitle">5 modules pour parler clairement, calmement, fermement</div>
+    </div>
+    <div id="respect-content"></div>
+  </div><!-- /respect-screen -->
 
 
   <!-- ══ SESSIONS SCREEN ══════════════════════════════════ -->
@@ -246,13 +261,13 @@
       <div class="nav-icon">📚</div>
       <div class="nav-label">Sessions</div>
     </div>
+    <div class="nav-item" data-screen="respect">
+      <div class="nav-icon">🛡️</div>
+      <div class="nav-label">Respect</div>
+    </div>
     <div class="nav-item" data-screen="vocab">
       <div class="nav-icon">🃏</div>
       <div class="nav-label">Vocab</div>
-    </div>
-    <div class="nav-item" data-screen="figures">
-      <div class="nav-icon">🎭</div>
-      <div class="nav-label">Figures</div>
     </div>
     <div class="nav-item" data-screen="quiz">
       <div class="nav-icon">📊</div>
